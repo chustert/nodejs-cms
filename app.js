@@ -5,13 +5,17 @@ const exphbs = require('express-handlebars');
 
 app.use(express.static(path.join(__dirname, 'public'))); // allows using static files in the piblic directory
 
+// set view engine
 app.engine('handlebars', exphbs({defaultLayout: 'home'}));
 app.set('view engine', 'handlebars');
 
 // load routes
-const main = require('./routes/home/main');
+const home = require('./routes/home/index');
+const admin = require('./routes/admin/index');
 
-app.use('/', main);
+// use routes
+app.use('/', home);
+app.use('/admin', admin);
 
 
 app.listen(4500, ()=> {
