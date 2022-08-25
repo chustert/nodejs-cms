@@ -15,7 +15,7 @@ router.get('/create', (req, res) => {
 });
 
 router.post('/create', (req, res) => {
-    res.send('WORKED')
+    console.log(req.body);
 });
 
 module.exports = router;
