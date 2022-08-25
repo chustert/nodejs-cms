@@ -4,6 +4,8 @@ const path = require('path');
 const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access');
+const Handlebars = require('handlebars');
 
 mongoose.connect('mongodb://localhost:27017/cms').then(db=> {
     console.log('MONGO connected');
@@ -15,7 +17,7 @@ mongoose.connect('mongodb://localhost:27017/cms').then(db=> {
 app.use(express.static(path.join(__dirname, 'public'))); // allows using static files in the piblic directory
 
 // set view engine
-app.engine('handlebars', exphbs({defaultLayout: 'home'}));
+app.engine('handlebars', exphbs({handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home'}));
 app.set('view engine', 'handlebars');
 
 // Body-Parser
