@@ -10,4 +10,8 @@ router.get('/', (req, res) => {
     res.send('IT WORKS!')
 });
 
+router.get('/create', (req, res) => {
+    res.render('admin/posts/create')
+});
+
 module.exports = router;
