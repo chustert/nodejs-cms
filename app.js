@@ -8,21 +8,10 @@ app.use(express.static(path.join(__dirname, 'public'))); // allows using static 
 app.engine('handlebars', exphbs({defaultLayout: 'home'}));
 app.set('view engine', 'handlebars');
 
-app.get('/', (req, res)=> {
-    res.render('home/index');
-});
+// load routes
+const main = require('./routes/home/main');
 
-app.get('/about', (req, res)=> {
-    res.render('home/about');
-});
-
-app.get('/login', (req, res)=> {
-    res.render('home/login');
-});
-
-app.get('/register', (req, res)=> {
-    res.render('home/register');
-});
+app.use('/', main);
 
 
 app.listen(4500, ()=> {
