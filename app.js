@@ -2,6 +2,14 @@ const express = require('express');
 const app = express(); // Create an app from the express function
 const path = require('path');
 const exphbs = require('express-handlebars');
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/cms').then(db=> {
+    console.log('MONGO connected');
+}).catch(error=>{
+    console.log(error);
+});
+
 
 app.use(express.static(path.join(__dirname, 'public'))); // allows using static files in the piblic directory
 
