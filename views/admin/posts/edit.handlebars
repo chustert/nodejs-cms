@@ -1,6 +1,6 @@
 <h1>Edit Post</h1>
 
-<form action="/admin/posts/edit/" method="post">
+<form action="/admin/posts/edit/{{post.id}}?_method=PUT" method="post">
     <div class="form-group">
         <label for="title">Title</label>
         <input name="title" type="text" class="form-control" id="title" value="{{post.title}}">
@@ -16,7 +16,7 @@
         </select>
     </div>
     <div class="form-check">
-        <label for="allowComments">
+        <label for="allowComments" class="form-check-label">
             <input name="allowComments" type="checkbox" {{#if post.allowComments}} checked="checked" {{/if}} class="form-check-input" id="allowComments">
             Allow Comments
         </label>
