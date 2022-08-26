@@ -21,41 +21,57 @@ router.get('/create', (req, res) => {
 });
 
 router.post('/create', (req, res) => {
-    
-    let filename = 'http://place-hold.it/750x300';
+    let errors = [];
 
-    if(!isEmpty(req.files.file)) {
-        let file = req.files.file;
-        filename = Date.now() + '-' + file.name; 
-    
-        file.mv('./public/uploads/' + filename, (err) => {
-            if(err) throw err;
+    if(!req.body.title) {
+        errors.push({message: 'Please add a title.'});
+    }
+    if(!req.body.body) {
+        errors.push({message: 'Please add a text.'});
+    }
+
+    if (errors.length > 0) {
+        res.render('admin/posts/create', {
+            errors: errors
+        })
+    } else {
+        let filename = 'http://place-hold.it/750x300';
+
+        if(!isEmpty(req.files.file)) {
+            let file = req.files.file;
+            filename = Date.now() + '-' + file.name; 
+        
+            file.mv('./public/uploads/' + filename, (err) => {
+                if(err) throw err;
+            });
+        }
+
+        let allowComments = true;
+        
+        if(req.body.allowComments) {
+            allowComments = true;
+        } else {
+            allowComments = false;
+        }
+
+        const newPost = new Post({
+            title: req.body.title,
+            status: req.body.status,
+            allowComments: allowComments,
+            body: req.body.body,
+            file: filename
+        });
+        // console.log(req.body);
+
+        newPost.save().then(savedPost => {
+            console.log(savedPost);
+            res.redirect('/admin/posts');
+        }).catch(error => {
+            console.log(error, "could not save post");
         });
     }
-
-    let allowComments = true;
     
-    if(req.body.allowComments) {
-        allowComments = true;
-    } else {
-        allowComments = false;
-    }
-
-    const newPost = new Post({
-        title: req.body.title,
-        status: req.body.status,
-        allowComments: allowComments,
-        body: req.body.body,
-        file: filename
-    });
-    // console.log(req.body);
-
-    newPost.save().then(savedPost => {
-        console.log(savedPost);
-        res.redirect('/admin/posts');
-    }).catch(error => {
-        console.log("could not save post");
-    });
+    
 });
 
 router.get('/edit/:id', (req, res) => {
