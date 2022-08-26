@@ -8,9 +8,11 @@
     <div class="form-group">
         <label for="status">Status</label>
         <select name="status" id="status" class="form-control">
-            <option value="public">Public</option>
-            <option value="private">Private</option>
-            <option value="draft">Draft</option>
+            {{#select post.status}}
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+                <option value="draft">Draft</option>
+            {{/select}}
         </select>
     </div>
     <div class="form-check">

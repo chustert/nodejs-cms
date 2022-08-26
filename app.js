@@ -13,11 +13,13 @@ mongoose.connect('mongodb://localhost:27017/cms').then(db=> {
     console.log(error);
 });
 
-
+// Using Static
 app.use(express.static(path.join(__dirname, 'public'))); // allows using static files in the piblic directory
 
 // set view engine
-app.engine('handlebars', exphbs({handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home'}));
+const {select} = require('./helpers/handlebars-helpers');
+
+app.engine('handlebars', exphbs({handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home', helpers: {select: select}}));
 app.set('view engine', 'handlebars');
 
 // Body-Parser
