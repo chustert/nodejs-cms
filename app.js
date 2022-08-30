@@ -8,6 +8,8 @@ const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-acce
 const Handlebars = require('handlebars');
 const methodOverride = require('method-override');
 const upload = require('express-fileupload');
+const session = require('express-session');
+const flash = require('connect-flash');
 
 mongoose.connect('mongodb://localhost:27017/cms').then(db=> {
     console.log('MONGO connected');
@@ -23,7 +25,7 @@ const {select} = require('./helpers/handlebars-helpers');
 app.engine('handlebars', exphbs({handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home', helpers: {select: select}}));
 app.set('view engine', 'handlebars');
 
-// File Upload
+// File Upload Middleware
 app.use(upload());
 
 // Body-Parser
@@ -33,12 +35,27 @@ app.use(bodyParser.json());
 // Method Override
 app.use(methodOverride('_method'));
 
-// load routes
+// Sessions
+app.use(session({
+    secret: 'chris123',
+    resave: true,
+    saveUninitialized: true
+}));
+
+app.use(flash());
+
+// Local variables using Middleware
+app.use((req, res, next)=> {
+    res.locals.success_message = req.flash('success_message');
+    next();
+});
+
+// Load Routes
 const home = require('./routes/home/index');
 const admin = require('./routes/admin/index');
 const posts = require('./routes/admin/posts');
 
-// use routes
+// Use Routes
 app.use('/', home);
 app.use('/admin', admin);
 app.use('/admin/posts', posts);

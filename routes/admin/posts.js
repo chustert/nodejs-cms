@@ -35,14 +35,17 @@ router.post('/create', (req, res) => {
             errors: errors
         })
     } else {
-        let filename = 'http://place-hold.it/750x300';
+        let filename = '1661485874214-66412784_2389658641291513_5607738796563291225_n.jpg';
 
-        if(!isEmpty(req.files.file)) {
+        if(req.files != null) {
             let file = req.files.file;
             filename = Date.now() + '-' + file.name; 
         
-            file.mv('./public/uploads/' + filename, (err) => {
-                if(err) throw err;
+            const uploadPath = __dirname + "/../../public/uploads/";
+            file.mv(uploadPath + filename, (err) => {
+                 if(err) {
+                    console.log(`There was an error: ${err}`) 
+                 }
             });
         }
 
@@ -64,7 +67,7 @@ router.post('/create', (req, res) => {
         // console.log(req.body);
 
         newPost.save().then(savedPost => {
-            console.log(savedPost);
+            req.flash('success_message', `Post ${savedPost.title} was created successfully`);
             res.redirect('/admin/posts');
         }).catch(error => {
             console.log(error, "could not save post");
@@ -93,7 +96,22 @@ router.put('/edit/:id', (req, res) => {
         post.allowComments = allowComments;
         post.body = req.body.body;
 
+        if(req.files != null) {
+            let file = req.files.file;
+            filename = Date.now() + '-' + file.name; 
+            post.file = filename;
+        
+            const uploadPath = __dirname + "/../../public/uploads/";
+            file.mv(uploadPath + filename, (err) => {
+                 if(err) {
+                    console.log(`There was an error: ${err}`) 
+                 }
+            });
+        }
+
         post.save().then(updatedPost => {
+
+            req.flash('success_message', `Post ${updatedPost.title} was successfully updated`);
             res.redirect('/admin/posts');
         }).catch(error => {
             console.log("could not save post");
@@ -106,6 +124,7 @@ router.delete('/:id', (req, res) => {
     .then(post => {
         fs.unlink(uploadDir + post.file, (err)=> {
             post.remove();
+            req.flash('success_message', `Post ${post.title} was successfully deleted`);
             res.redirect('/admin/posts');
 
         }); 
