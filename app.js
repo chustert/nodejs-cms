@@ -21,8 +21,8 @@ mongoose.connect('mongodb://localhost:27017/cms').then(db=> {
 app.use(express.static(path.join(__dirname, 'public'))); // allows using static files in the piblic directory
 
 // set view engine
-const {select} = require('./helpers/handlebars-helpers');
-app.engine('handlebars', exphbs({handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home', helpers: {select: select}}));
+const {select, generateDate} = require('./helpers/handlebars-helpers');
+app.engine('handlebars', exphbs({handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home', helpers: {select: select, generateDate: generateDate}}));
 app.set('view engine', 'handlebars');
 
 // File Upload Middleware
@@ -54,11 +54,13 @@ app.use((req, res, next)=> {
 const home = require('./routes/home/index');
 const admin = require('./routes/admin/index');
 const posts = require('./routes/admin/posts');
+const categories = require('./routes/admin/categories');
 
 // Use Routes
 app.use('/', home);
 app.use('/admin', admin);
 app.use('/admin/posts', posts);
+app.use('/admin/categories', categories);
 
 
 app.listen(4500, ()=> {

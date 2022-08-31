@@ -19,6 +19,7 @@
     "faker": "^5.5.3",
     "handlebars": "^4.7.7",
     "method-override": "^3.0.0",
+    "moment": "^2.29.4",
     "mongoose": "^6.5.3"
   }
 }

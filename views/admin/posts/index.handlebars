@@ -19,7 +19,7 @@
                 <td>{{title}}</td>
                 <td>{{status}}</td>
                 <td>{{allowComments}}</td>
-                <td>{{date}}</td>
+                <td>{{generateDate date 'MMMM Do YYYY'}}</td>
                 <td><a href="/admin/posts/edit/{{id}}" class="btn btn-info">Edit</a></td>
                 <td>
                     <form action="/admin/posts/{{id}}?_method=DELETE" method="post">
