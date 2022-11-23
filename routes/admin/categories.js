@@ -48,4 +48,20 @@ router.put('/edit/:id', (req, res) => {
     }); 
 });
 
+router.delete('/:id', (req, res) => {
+    Category.findOne({_id: req.params.id})
+    .then(category => {
+        category.remove();
+        req.flash('success_message', `Category ${category.name} was successfully deleted`);
+        res.redirect('/admin/categories');
+    });
+});
+// router.delete('/:id', (req, res) => {
+//     Category.remove({_id: req.params.id})
+//     .then(category => {
+//         req.flash('success_message', `Category was successfully deleted`);
+//         res.redirect('/admin/categories');
+//     });
+// });
+
 module.exports = router;

@@ -10,8 +10,9 @@ const methodOverride = require('method-override');
 const upload = require('express-fileupload');
 const session = require('express-session');
 const flash = require('connect-flash');
+const {mongoDbUrl} = require('./config/database');
 
-mongoose.connect('mongodb://localhost:27017/cms').then(db=> {
+mongoose.connect(mongoDbUrl).then(db=> {
     console.log('MONGO connected');
 }).catch(error=>{
     console.log(error);
@@ -47,6 +48,7 @@ app.use(flash());
 // Local variables using Middleware
 app.use((req, res, next)=> {
     res.locals.success_message = req.flash('success_message');
+    res.locals.error_message = req.flash('error_message');
     next();
 });
 

@@ -16,6 +16,14 @@
         <input name="file" type="file" class="form-control">
     </div>
     <div class="form-group">
+        <label for="category">Category</label>
+        <select name="category" id="category" class="form-control">
+            {{#each categories}}
+                <option value="{{id}}">{{name}}</option>                
+            {{/each}}
+        </select>
+    </div>
+    <div class="form-group">
         <label for="status">Status</label>
         <select name="status" id="status" class="form-control">
             <option value="public">Public</option>
