@@ -10,7 +10,7 @@ router.all('/*', (req, res, next)=> {
 }); 
 
 router.get('/', (req, res) => {
-    Comment.find({user: req.user.id}).populate('user')
+    Comment.find({user: '637ea6f72fb1bc0ab24620fb'}).populate('user') // req.user.id
     .then(comments => {
         res.render('admin/comments', {comments: comments});
     })
@@ -25,6 +25,7 @@ router.post('/', (req, res) => {
         post.comments.push(newComment);
         post.save().then(savedPost => {
             newComment.save().then(savedComment => {
+                req.flash('success_message', `Comment successfully submitted and is currently being reviewed.`);
                 res.redirect(`/post/${post.id}`);
             })
         });
@@ -38,6 +39,13 @@ router.delete('/:id', (req, res) => {
             res.redirect('/admin/comments');
         });
     });
+});
+
+router.post('/approve-comment', (req, res) => {
+    Comment.findByIdAndUpdate(req.body.id, {$set: {approveComment: req.body.approveComment}}, (err, result) => {
+        if(err) return err;
+        res.send(result);
+    })
 });
 
 module.exports = router;

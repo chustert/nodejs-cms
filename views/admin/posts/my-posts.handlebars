@@ -1,10 +1,9 @@
-<h1>All Posts</h1>
+<h1>My Posts</h1>
 
 <table class="table table-bordered">
     <thead>
         <tr>
             <th>Id</th>
-            <th>Author</th>
             <th>Image</th>
             <th>Title</th>
             <th>Status</th>
@@ -17,7 +16,6 @@
         {{#each posts}}
             <tr>
                 <td>{{id}}</td>
-                <td>{{user.firstName}}</td>
                 <td><img height="50px" src="/uploads/{{file}}" alt=""></td>
                 <td>{{title}}</td>
                 <td>{{status}}</td>
