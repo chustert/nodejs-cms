@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const faker = require('faker');
 const Post = require('../../models/Post');
+const Comment = require('../../models/Comment');
+const Category = require('../../models/Category');
 
 router.all('/*', (req, res, next)=> {
     req.app.locals.layout = 'admin';
@@ -9,7 +11,13 @@ router.all('/*', (req, res, next)=> {
 }); 
 
 router.get('/', (req, res)=> {
-    res.render('admin/index');
+    Post.count({}).then(postCount => {
+        Comment.count({}).then(commentCount => {
+            Category.count({}).then(categoryCount => {
+                res.render('admin/index', {postCount: postCount, commentCount: commentCount, categoryCount: categoryCount});
+            });
+        });
+    });
 });
 
 router.post('/generate-fake-posts', (req, res) => {
