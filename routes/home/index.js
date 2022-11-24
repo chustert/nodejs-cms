@@ -5,7 +5,9 @@ const Category = require('../../models/Category');
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs')
 const passport = require('passport');
+const { disconnect } = require('mongoose');
 const LocalStrategy = require('passport-local').Strategy;
+const {userAuthenticated} = require('../../helpers/authentication');
 
 
 router.all('/*', (req, res, next)=> {
@@ -33,8 +35,29 @@ router.get('/login', (req, res)=> {
 // APP LOGIN
 
 passport.use(new LocalStrategy({usernameField: 'email'}, (email, password, done) => {
-    console.log(email);
+    User.findOne({ email: email }).then(user => {
+        if(!user) return done(null, false, {message: 'No user found.'});
+
+        bcrypt.compare(password, user.password, (err, matched) => {
+            if(err) return err;
+            if(matched) {
+                return done(null, user)
+            } else {
+                return done(null, false, { message: 'Incorrect password.' });
+            }
+        });
+    })
 }));
+
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user) {
+        done(err, user);
+    });
+});
 
 router.post('/login', (req, res, next)=> {
     passport.authenticate('local', {
@@ -43,6 +66,11 @@ router.post('/login', (req, res, next)=> {
         failureFlash: true
     })(req, res, next);
 });
+
+router.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/login');
+})
 
 router.get('/register', (req, res)=> {
     res.render('home/register');
@@ -111,7 +139,10 @@ router.post('/register', (req, res)=> {
 });
 
 router.get('/post/:id', (req, res) => {
-    Post.findOne({_id: req.params.id}).then(post => {
+    Post.findOne({_id: req.params.id})
+    .populate({path: 'comments', populate: {path: 'user', model: 'users'}})
+    .populate('user')
+    .then(post => {
         Category.find({}).then(categories => {
             res.render('home/post', {post: post, categories: categories});
         });

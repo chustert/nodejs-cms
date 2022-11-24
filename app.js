@@ -11,6 +11,7 @@ const upload = require('express-fileupload');
 const session = require('express-session');
 const flash = require('connect-flash');
 const {mongoDbUrl} = require('./config/database');
+const passport = require('passport');
 
 mongoose.connect(mongoDbUrl).then(db=> {
     console.log('MONGO connected');
@@ -45,10 +46,16 @@ app.use(session({
 
 app.use(flash());
 
+// PASSPORT
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Local variables using Middleware
 app.use((req, res, next)=> {
+    res.locals.user = req.user || null;
     res.locals.success_message = req.flash('success_message');
     res.locals.error_message = req.flash('error_message');
+    res.locals.error = req.flash('error');
     next();
 });
 
@@ -57,12 +64,15 @@ const home = require('./routes/home/index');
 const admin = require('./routes/admin/index');
 const posts = require('./routes/admin/posts');
 const categories = require('./routes/admin/categories');
+const comments = require('./routes/admin/comments');
+const { read } = require('fs');
 
 // Use Routes
 app.use('/', home);
 app.use('/admin', admin);
 app.use('/admin/posts', posts);
 app.use('/admin/categories', categories);
+app.use('/admin/comments', comments);
 
 
 app.listen(4500, ()=> {
