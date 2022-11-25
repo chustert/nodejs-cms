@@ -16,12 +16,24 @@ router.all('/*', (req, res, next)=> {
 }); 
 
 router.get('/', (req, res)=> {
-    Post.find({}).then(posts => {
-        Category.find({}).then(categories=> {
-            res.render('home/index', {posts: posts, categories: categories});    
-        });
-    });
-    
+    const perPage = 10;
+    const page = req.query.page || 1;
+
+    Post.find({})
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .then(posts => {
+            Post.count().then(postCount => {
+                Category.find({}).then(categories=> {
+                    res.render('home/index', {
+                        posts: posts, 
+                        categories: categories,
+                        current: parseInt(page),
+                        pages: Math.ceil(postCount / perPage)
+                    });    
+                });
+            });
+        });            
 });
 
 router.get('/about', (req, res)=> {

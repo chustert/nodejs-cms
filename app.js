@@ -23,8 +23,8 @@ mongoose.connect(mongoDbUrl).then(db=> {
 app.use(express.static(path.join(__dirname, 'public'))); // allows using static files in the piblic directory
 
 // set view engine
-const {select, generateDate} = require('./helpers/handlebars-helpers');
-app.engine('handlebars', exphbs({handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home', helpers: {select: select, generateDate: generateDate}}));
+const {select, generateDate, paginate} = require('./helpers/handlebars-helpers');
+app.engine('handlebars', exphbs({handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home', helpers: {select: select, generateDate: generateDate, paginate: paginate}}));
 app.set('view engine', 'handlebars');
 
 // File Upload Middleware
