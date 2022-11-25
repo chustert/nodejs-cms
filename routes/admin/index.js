@@ -11,13 +11,24 @@ router.all('/*', (req, res, next)=> {
 }); 
 
 router.get('/', (req, res)=> {
-    Post.count({}).then(postCount => {
-        Comment.count({}).then(commentCount => {
-            Category.count({}).then(categoryCount => {
-                res.render('admin/index', {postCount: postCount, commentCount: commentCount, categoryCount: categoryCount});
-            });
-        });
-    });
+    const promises = [
+        Post.count().exec(),
+        Category.count().exec(),
+        Comment.count().exec()
+    ];
+
+    Promise.all(promises).then(([postCount, categoryCount, commentCount]) => {
+        res.render('admin/index', {postCount: postCount, categoryCount: categoryCount, commentCount: commentCount});       
+    })
+
+
+    // Post.count({}).then(postCount => {
+    //     Comment.count({}).then(commentCount => {
+    //         Category.count({}).then(categoryCount => {
+    //             res.render('admin/index', {postCount: postCount, commentCount: commentCount, categoryCount: categoryCount});
+    //         });
+    //     });
+    // });
 });
 
 router.post('/generate-fake-posts', (req, res) => {
