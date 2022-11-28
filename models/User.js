@@ -17,7 +17,15 @@ const UserSchema = new Schema({
     password: {
         type: String,
         required: true,
-    }
-});
+    },
+    posts: [{
+        type: Schema.Types.ObjectId,
+        ref: 'posts'
+    }],
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: 'comments'
+    }]
+}, {usePushEach: true});
 
 module.exports = mongoose.model('users', UserSchema);
