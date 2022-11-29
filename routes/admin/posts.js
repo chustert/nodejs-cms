@@ -2,17 +2,19 @@ const express = require('express');
 const router = express.Router();
 const Post = require('../../models/Post');
 const Category = require('../../models/Category');
+const User = require('../../models/User');
 const {isEmpty, uploadDir} = require('../../helpers/upload-helper');
 const fs = require('fs');
 //const path = require('path');
-const {userAuthenticated} = require('../../helpers/authentication');
+const { userAuthenticated } = require('../../helpers/authentication');
+const { adminAuthenticated } = require('../../helpers/adminAuthentication');
 
-router.all('/*', (req, res, next)=> {
+router.all('/*', userAuthenticated, (req, res, next)=> {
     req.app.locals.layout = 'admin';
     next();
 }); 
 
-router.get('/', (req, res) => {
+router.get('/', adminAuthenticated, (req, res) => {
     Post.find().populate('category').populate('user').then(posts => {
         res.render('admin/posts', {posts: posts});
     }); 
@@ -69,26 +71,27 @@ router.post('/create', (req, res) => {
             allowComments = false;
         }
 
-        const newPost = new Post({
-            user: req.user.id,
-            title: req.body.title,
-            status: req.body.status,
-            allowComments: allowComments,
-            body: req.body.body,
-            file: filename,
-            category: req.body.category
-        });
-        // console.log(req.body);
-
-        newPost.save().then(savedPost => {
-            req.flash('success_message', `Post "${savedPost.title}" was created successfully`);
-            res.redirect('/admin/posts');
-        }).catch(error => {
-            console.log(error, "could not save post");
-        });
+        User.findOne({_id: req.user.id}).then(loggedUser => {
+            const newPost = new Post({
+                user: req.user.id,
+                title: req.body.title,
+                status: req.body.status,
+                allowComments: allowComments,
+                body: req.body.body,
+                file: filename,
+                category: req.body.category
+            });
+            loggedUser.posts.push(newPost);
+            loggedUser.save().then(savedUser => {
+                newPost.save().then(savedPost => {
+                    req.flash('success_message', `Post "${savedPost.title}" was created successfully`);
+                    res.redirect('/admin/posts');
+                }).catch(error => {
+                    console.log(error, "could not save post");
+                });
+            })
+        })
     }
-    
-    
 });
 
 router.get('/edit/:id', (req, res) => {

@@ -24,7 +24,9 @@ app.use(express.static(path.join(__dirname, 'public'))); // allows using static 
 
 // set view engine
 const {select, generateDate, paginate} = require('./helpers/handlebars-helpers');
-app.engine('handlebars', exphbs({handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home', helpers: {select: select, generateDate: generateDate, paginate: paginate}}));
+const {userRoleAuthenticated} = require('./helpers/role-authentication');
+app.engine('handlebars', exphbs({handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home', helpers: {select: select, generateDate: generateDate, paginate: paginate, userRoleAuthenticated: userRoleAuthenticated}}));
+
 app.set('view engine', 'handlebars');
 
 // File Upload Middleware

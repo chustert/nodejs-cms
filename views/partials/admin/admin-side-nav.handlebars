@@ -11,9 +11,11 @@
             <span class="nav-link-text">Posts</span>
           </a>
           <ul class="sidenav-second-level collapse" id="collapsePosts">
-            <li>
-              <a href="/admin/posts">All Posts</a>
-            </li>
+            {{#userRoleAuthenticated user.role 'admin'}}
+              <li>
+                <a href="/admin/posts">All Posts</a>
+              </li>
+            {{/userRoleAuthenticated}}
             <li>
               <a href="/admin/posts/my-posts">My Posts</a>
             </li>
@@ -63,17 +65,17 @@
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
           <a class="nav-link" href="/admin/comments">
             <i class="fa fa-fw fa-comments-o"></i>
-            <span class="nav-link-text">Comments</span>
+            <span class="nav-link-text">My Comments</span>
           </a>
         </li>
-
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
-          <a class="nav-link" href="/admin/users">
-            <i class="fa fa-fw fa-user"></i>
-            <span class="nav-link-text">Profiles</span>
-          </a>
-        </li>
-
+        {{#userRoleAuthenticated user.role 'admin'}}
+          <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
+            <a class="nav-link" href="/admin/users">
+              <i class="fa fa-fw fa-user"></i>
+              <span class="nav-link-text">Profiles</span>
+            </a>
+          </li>
+        {{/userRoleAuthenticated}}
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
           <a class="nav-link" href="/admin/users/me">
             <i class="fa fa-fw fa-user"></i>

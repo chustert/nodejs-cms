@@ -18,6 +18,11 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
+    role: {
+        type: String,
+        default: 'user'
+    },
+    // USE THIS IF REFERENCES IN THE USER SCHEMA ARE NEEDED - not complete yet, only works for posts
     posts: [{
         type: Schema.Types.ObjectId,
         ref: 'posts'

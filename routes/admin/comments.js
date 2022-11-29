@@ -3,14 +3,15 @@ const { route } = require('../home');
 const router = express.Router();
 const Post = require('../../models/Post');
 const Comment = require('../../models/Comment');
+const {userAuthenticated} = require('../../helpers/authentication');
 
-router.all('/*', (req, res, next)=> {
+router.all('/*', userAuthenticated, (req, res, next)=> {
     req.app.locals.layout = 'admin';
     next();
 }); 
 
 router.get('/', (req, res) => {
-    Comment.find({user: '637ea6f72fb1bc0ab24620fb'}).populate('user') // req.user.id
+    Comment.find({user: req.user.id}).populate('user')
     .then(comments => {
         res.render('admin/comments', {comments: comments});
     })

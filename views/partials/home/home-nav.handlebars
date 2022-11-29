@@ -13,16 +13,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/admin">Admin</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link" href="/about">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/login">Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/register">Register</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Services</a>
@@ -30,6 +21,29 @@
             <li class="nav-item">
               <a class="nav-link" href="#">Contact</a>
             </li>
+            {{#unless user}}
+              <li class="nav-item">
+                <a class="nav-link" href="/login">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/register">Register</a>
+              </li>
+            {{/unless}}
+            {{#if user}}
+              <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+              </li>
+            {{/if}}
+            {{#if user}}
+              <li class="nav-item">
+                <a class="nav-link" href="/admin">Admin</a>
+              </li>
+            {{/if}}
+            {{#userRoleAuthenticated user.role 'admin'}}
+              <li class="nav-item">
+                <a class="nav-link" href="/admin">Super Admin</a>
+              </li>
+            {{/userRoleAuthenticated}}
           </ul>
         </div>
       </div>

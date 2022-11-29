@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../../models/User');
 const Post = require('../../models/Post');
+const Comment = require('../../models/Comment');
 const Category = require('../../models/Category');
 const bcrypt = require('bcryptjs')
 const {isEmpty, uploadDir} = require('../../helpers/upload-helper');
@@ -9,7 +10,7 @@ const fs = require('fs');
 //const path = require('path');
 const {userAuthenticated} = require('../../helpers/authentication');
 
-router.all('/*', (req, res, next)=> {
+router.all('/*', userAuthenticated, (req, res, next)=> {
     req.app.locals.layout = 'admin';
     next();
 }); 
@@ -96,47 +97,29 @@ router.put('/password/:id', (req, res) => {
     }
 });
 
-// router.delete('/:id', (req, res) => {
-//     User.findOne({_id: req.params.id})
-//     .populate('posts')
-//     .then(user => {
+router.delete('/:id', (req, res) => {
+    User.findByIdAndRemove(req.params.id)
+    .then(user => {
+        Comment.find({user: req.params.id})
+        .then(comments => {
+            comments.forEach(comment => {
+                comment.remove();
+            });
+        }).catch(error => {
+            console.log(error, "could not delete comments");
+        });
+        Post.find({user: req.params.id})
+        .then(posts => {
+            posts.forEach(post => {
+                post.remove();
+            });
+        }).catch(error => {
+            console.log(error, "could not delete postss");
+        });
+        req.flash('success_message', `User ${user.email} and all their posts and comments were successfully deleted`);
+        res.redirect('/admin/users');
+    });
 
-
-
-
-//         // also delete all posts and comments from this user
-//         Post.findOne({_id: req.params.id})
-//         .populate('comments')
-//         .then(post => {
-//             fs.unlink(uploadDir + post.file, (err)=> {
-//                 if(!post.comments.length < 1) {
-//                     post.comments.forEach(comment => {
-//                         comment.remove();
-//                     })
-//                 }
-//                 post.remove().then(postRemoved => {
-//                     req.flash('success_message', `Post "${post.title}" was successfully deleted`);
-//                     res.redirect('/admin/posts/my-posts');
-//                 });
-//             }); 
-//         });
-        
-
-
-
-
-//         fs.unlink(uploadDir + post.file, (err)=> {
-//             if(!post.comments.length < 1) {
-//                 post.comments.forEach(comment => {
-//                     comment.remove();
-//                 })
-//             }
-//             post.remove().then(postRemoved => {
-//                 req.flash('success_message', `Post "${post.title}" was successfully deleted`);
-//                 res.redirect('/admin/posts/my-posts');
-//             });
-//         }); 
-//     });
-// });
+});
 
 module.exports = router;
