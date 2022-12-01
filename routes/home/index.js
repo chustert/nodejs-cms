@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Post = require('../../models/Post');
 const Category = require('../../models/Category');
+const Comment = require('../../models/Comment');
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs')
 const passport = require('passport');
@@ -40,8 +41,30 @@ router.get('/about', (req, res)=> {
     res.render('home/about');
 });
 
-router.get('/my-account', (req, res)=> {
+router.get('/my-account', userAuthenticated, (req, res)=> {
     res.render('home/my-account');
+});
+
+router.get('/my-account/profile', userAuthenticated, (req, res)=> {
+    User.findById(req.user.id)
+    .then(user => {
+        res.render('home/my-account/profile', {user: user});
+    }); 
+});
+
+router.get('/my-account/posts', userAuthenticated, (req, res)=> {
+    Post.find({user: req.user.id})
+    .populate('category')
+    .then(posts => {
+        res.render('home/my-account/posts', {posts: posts});
+    }); 
+});
+
+router.get('/my-account/comments', userAuthenticated, (req, res)=> {
+    Comment.find({user: req.user.id}).populate('user')
+    .then(comments => {
+        res.render('home/my-account/comments', {comments: comments});
+    })
 });
 
 router.get('/login', (req, res)=> {

@@ -1,0 +1,18 @@
+{{> home/my-account-nav}}    
+
+<div class="container">
+    <h1 class="my-4">My Account
+        <small>{{user.firstName}}</small>
+    </h1>
+
+    <div class="card">
+        <div class="card-header">
+            Account Details
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{user.firstName}} {{user.lastName}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{user.email}}</h6>
+            <p class="card-text">Role: {{user.role}}</p>
+        </div>
+    </div>
+</div>
