@@ -21,18 +21,20 @@
     <!-- Custom styles for the single post -->
     <link href="/css/blog-post.css" rel="stylesheet">
 
+    <!-- General custom styles -->
+    <link href="/css/styles.css" rel="stylesheet">
+
   </head>
 
   <body>
 
-   {{> home/home-nav}}
+    {{> home/home-nav}}    
 
     <!-- Page Content -->
-    <div class="container">
-
+    
       {{#if errors}}
         {{#each errors}}
-        <div class="alert alert-danger">
+        <div class="alert alert-danger container">
           {{message}}
         </div>
         {{/each}}
@@ -42,7 +44,6 @@
       
       {{{body}}}
 
-    </div>
     <!-- /.container -->
 
 {{> home/footer}}

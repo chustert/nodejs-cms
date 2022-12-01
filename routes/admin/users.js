@@ -8,21 +8,23 @@ const bcrypt = require('bcryptjs')
 const {isEmpty, uploadDir} = require('../../helpers/upload-helper');
 const fs = require('fs');
 //const path = require('path');
-const {userAuthenticated} = require('../../helpers/authentication');
+const { userAuthenticated } = require('../../helpers/authentication');
+const { adminAuthenticated } = require('../../helpers/admin-authentication');
 
 router.all('/*', userAuthenticated, (req, res, next)=> {
     req.app.locals.layout = 'admin';
     next();
 }); 
 
-router.get('/', (req, res) => {
+router.get('/', adminAuthenticated, (req, res) => {
     User.find().then(users => {
         res.render('admin/users', {users: users});
     }); 
 });
 
 router.get('/me', (req, res) => {
-    User.findOne({user: req.user.id}).then(user => {
+    User.findById(req.user.id)
+    .then(user => {
         res.render('admin/users/me', {user: user});
     }); 
 });

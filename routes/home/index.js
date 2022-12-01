@@ -40,6 +40,10 @@ router.get('/about', (req, res)=> {
     res.render('home/about');
 });
 
+router.get('/my-account', (req, res)=> {
+    res.render('home/my-account');
+});
+
 router.get('/login', (req, res)=> {
     res.render('home/login');
 });

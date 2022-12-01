@@ -1,0 +1,14 @@
+html {
+    position: relative;
+    min-height: 100%;
+  }
+
+.footer {
+position: absolute;
+bottom: 0;
+width: 100%;
+}
+
+.nav-link {
+  padding: 0.5rem 1rem 0.5rem 0rem;
+}
