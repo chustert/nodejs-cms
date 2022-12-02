@@ -17,18 +17,36 @@
     <tbody>
 
         {{#each comments}}
-            <tr>
-                <th>{{id}}</th>
-                <td>{{user.firstName}}</td>
-                <td>{{post.title}}</td>
-                <td>{{generateDate date 'MMMM Do YYYY'}}</td>
-                <td><a href="/post/{{post.slug}}">View</a></td>
-                <td>
-                    <form action="/admin/comments/{{id}}?_method=DELETE" method="post">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
+            {{#if approveComment}}
+                <tr>
+                    <th>{{id}}</th>
+                    <td>{{user.firstName}}</td>
+                    <td>{{post.title}}</td>
+                    <td>{{generateDate date 'MMMM Do YYYY'}}</td>
+                    <td><a href="/post/{{post.slug}}#{{id}}">View</a></td>
+                    <td>
+                        <form action="/admin/comments/{{id}}?_method=DELETE" method="post">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {{else}}
+                <tr class="table-warning text-muted">
+                    <th>{{id}}</th>
+                    <td>{{user.firstName}}</td>
+                    <td>{{post.title}}</td>
+                    <td>{{generateDate date 'MMMM Do YYYY'}}</td>
+                    <td class="text-muted">View</td>
+                    <td>
+                        <form action="/admin/comments/{{id}}?_method=DELETE" method="post">
+                            <button style="cursor: pointer" type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                <div class="alert alert-warning" role="alert">
+                    Your yellow marked comments are currently being reviewed and can't be viewed yet.
+                </div>
+            {{/if}}
         {{/each}}
         
     </tbody>
