@@ -12,7 +12,6 @@ const fs = require('fs');
 const LocalStrategy = require('passport-local').Strategy;
 const {userAuthenticated} = require('../../helpers/authentication');
 
-
 router.all('/*', (req, res, next)=> {
     req.app.locals.layout = 'home';
     next();
@@ -44,7 +43,14 @@ router.get('/about', (req, res)=> {
 });
 
 router.get('/my-account', userAuthenticated, (req, res)=> {
-    res.render('home/my-account');
+    const promises = [
+        Post.count({user: req.user.id}).exec(),
+        Comment.count({user: req.user.id}).exec()
+    ];
+
+    Promise.all(promises).then(([postCount, commentCount]) => {
+        res.render('home/my-account', {postCount: postCount, commentCount: commentCount});       
+    })
 });
 
 router.get('/my-account/profile', userAuthenticated, (req, res)=> {
@@ -336,6 +342,11 @@ router.post('/login', (req, res, next)=> {
         failureFlash: true
     })(req, res, next);
 });
+
+
+
+
+
 
 router.get('/logout', (req, res) => {
     req.logout();

@@ -33,21 +33,21 @@ router.get('/', (req, res)=> {
     // });
 });
 
-router.post('/generate-fake-posts', (req, res) => {
-    for(let i = 0; i < req.body.amount; i++) {
-        let post = new Post();
+// router.post('/generate-fake-posts', (req, res) => {
+//     for(let i = 0; i < req.body.amount; i++) {
+//         let post = new Post();
 
-        post.title = faker.name.title();
-        post.status = 'public';
-        post.allowComments = faker.random.boolean();
-        post.body = faker.lorem.sentence();
-        post.slug = faker.name.title();
+//         post.title = faker.name.title();
+//         post.status = 'public';
+//         post.allowComments = faker.random.boolean();
+//         post.body = faker.lorem.sentence();
+//         post.slug = faker.name.title();
         
-        post.save(function(err) {
-            if (err) throw err;
-        });
-    }
-    res.redirect('/admin/posts');
-});
+//         post.save(function(err) {
+//             if (err) throw err;
+//         });
+//     }
+//     res.redirect('/admin/posts');
+// });
 
 module.exports = router;
