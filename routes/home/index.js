@@ -7,6 +7,8 @@ const User = require('../../models/User');
 const bcrypt = require('bcryptjs')
 const passport = require('passport');
 const { disconnect } = require('mongoose');
+const {isEmpty, uploadDir} = require('../../helpers/upload-helper');
+const fs = require('fs');
 const LocalStrategy = require('passport-local').Strategy;
 const {userAuthenticated} = require('../../helpers/authentication');
 
@@ -52,6 +54,76 @@ router.get('/my-account/profile', userAuthenticated, (req, res)=> {
     }); 
 });
 
+router.get('/my-account/profile/edit', (req, res) => {
+    User.findOne({_id: req.user.id}).then(user => {
+        res.render('home/my-account/profile/edit', {user: user})
+    });
+}); 
+
+router.put('/my-account/profile/edit', (req, res) => {
+    User.findOne({_id: req.user.id}).then(user => {
+
+        user.firstName = req.body.firstName;
+        user.lastName = req.body.lastName;
+        user.email = req.body.email;
+
+        user.save().then(updatedUser => {
+
+            // req.flash('success_message', `User ${updatedUser.email} was successfully updated`);
+            res.redirect('/my-account/profile');
+        }).catch(error => {
+            console.log("could not save user");
+        });
+    }); 
+});
+
+router.get('/my-account/profile/password', (req, res) => {
+    User.findOne({_id: req.user.id}).then(user => {
+        res.render('home/my-account/profile/password', {user: user})
+    });
+}); 
+
+router.put('/my-account/profile/password', (req, res) => {
+
+    let errors = [];
+
+    if(!req.body.password) {
+        errors.push({message: 'Please add a password.'});
+    }
+    if(!req.body.passwordConfirm) {
+        errors.push({message: 'The password confirmation field cannot be blank.'});
+    }
+    if(req.body.password !== req.body.passwordConfirm) {
+        errors.push({message: "Password fields don't match."});
+    }
+
+    if (errors.length > 0) {
+        res.render('home/my-account/profile/password', {
+            errors: errors
+        })
+    } else {
+
+        User.findOne({_id: req.user.id}).then(user => {
+
+            user.password = req.body.password;
+
+            bcrypt.genSalt(10, (err, salt) => {
+                bcrypt.hash(user.password, salt, (err, hash) => {
+
+                    user.password = hash;
+                    
+                    user.save().then(updatedUser => {
+                        req.flash('success_message', `Password of user ${updatedUser.email} was successfully updated`);
+                        res.redirect('/my-account/profile');
+                    }).catch(error => {
+                        console.log(error, "could not save user password");
+                    });
+                })
+            });
+        }); 
+    }
+});
+
 router.get('/my-account/posts', userAuthenticated, (req, res)=> {
     Post.find({user: req.user.id})
     .populate('category')
@@ -60,12 +132,171 @@ router.get('/my-account/posts', userAuthenticated, (req, res)=> {
     }); 
 });
 
+router.get('/my-account/posts/create', (req, res) => {
+    Category.find({}).then(categories => {
+        res.render('home/my-account/posts/create', {categories: categories})
+    })
+});
+
+router.post('/my-account/posts/create', (req, res) => {
+    let errors = [];
+
+    if(!req.body.title) {
+        errors.push({message: 'Please add a title.'});
+    }
+    if(!req.body.body) {
+        errors.push({message: 'Please add a text.'});
+    }
+
+    if (errors.length > 0) {
+        res.render('home/my-account/posts/create', {
+            errors: errors
+        })
+    } else {
+        let filename = '1661485874214-66412784_2389658641291513_5607738796563291225_n.jpg';
+
+        if(req.files != null) {
+            let file = req.files.file;
+            filename = Date.now() + '-' + file.name; 
+        
+            const uploadPath = __dirname + "/../../public/uploads/";
+            file.mv(uploadPath + filename, (err) => {
+                 if(err) {
+                    console.log(`There was an error: ${err}`) 
+                 }
+            });
+        }
+
+        let allowComments = true;
+        
+        if(req.body.allowComments) {
+            allowComments = true;
+        } else {
+            allowComments = false;
+        }
+
+        User.findOne({_id: req.user.id}).then(loggedUser => {
+            const newPost = new Post({
+                user: req.user.id,
+                title: req.body.title,
+                status: req.body.status,
+                allowComments: allowComments,
+                body: req.body.body,
+                file: filename,
+                category: req.body.category
+            });
+            loggedUser.posts.push(newPost);
+            loggedUser.save().then(savedUser => {
+                newPost.save().then(savedPost => {
+                    req.flash('success_message', `Post "${savedPost.title}" was created successfully`);
+                    res.redirect('/my-account/posts');
+                }).catch(error => {
+                    console.log(error, "could not save post");
+                });
+            })
+        })
+    }
+});
+
+router.get('/my-account/posts/edit/:id', (req, res) => {
+    Post.findOne({_id: req.params.id}).then(post => {
+        Category.find({}).then(categories => {
+            res.render('home/my-account/posts/edit', {post: post, categories: categories})
+        });
+    }); 
+});
+
+router.put('/my-account/posts/edit/:id', (req, res) => {
+    Post.findOne({_id: req.params.id}).then(post => {
+        if(req.body.allowComments) {
+            allowComments = true;
+        } else {
+            allowComments = false;
+        }
+
+        post.user = req.user.id;
+        post.title = req.body.title;
+        post.status = req.body.status;
+        post.allowComments = allowComments;
+        post.body = req.body.body;
+        post.category = req.body.category;
+
+        if(req.files != null) {
+            let file = req.files.file;
+            filename = Date.now() + '-' + file.name; 
+            post.file = filename;
+        
+            const uploadPath = __dirname + "/../../public/uploads/";
+            file.mv(uploadPath + filename, (err) => {
+                 if(err) {
+                    console.log(`There was an error: ${err}`) 
+                 }
+            });
+        }
+
+        post.save().then(updatedPost => {
+
+            req.flash('success_message', `Post ${updatedPost.title} was successfully updated`);
+            res.redirect('/my-account/posts');
+        }).catch(error => {
+            console.log("could not save post");
+        });
+    }); 
+});
+
+router.delete('/my-account/posts/:id', (req, res) => {
+    Post.findOne({_id: req.params.id})
+    .populate('comments')
+    .then(post => {
+        fs.unlink(uploadDir + post.file, (err)=> {
+            if(!post.comments.length < 1) {
+                post.comments.forEach(comment => {
+                    comment.remove();
+                })
+            }
+            post.remove().then(postRemoved => {
+                req.flash('success_message', `Post "${post.title}" was successfully deleted`);
+                res.redirect('/my-account/posts');
+            });
+        }); 
+    });
+});
+
 router.get('/my-account/comments', userAuthenticated, (req, res)=> {
-    Comment.find({user: req.user.id}).populate('user')
+    Comment.find({user: req.user.id})
+    .populate('user')
+    .populate('post')
     .then(comments => {
         res.render('home/my-account/comments', {comments: comments});
     })
 });
+
+router.post('/my-account/comments', (req, res) => {
+    Post.findOne({_id: req.body.id})
+    .then(post => {
+        const newComment = new Comment({
+            user: req.user.id,
+            body: req.body.body,
+            post: req.body.id
+        });
+        post.comments.push(newComment);
+        post.save().then(savedPost => {
+            newComment.save().then(savedComment => {
+                req.flash('success_message', `Comment successfully submitted and is currently being reviewed.`);
+                res.redirect(`/post/${post.slug}`);
+            })
+        });
+    })
+});
+
+
+
+
+
+
+
+
+
 
 router.get('/login', (req, res)=> {
     res.render('home/login');
@@ -100,7 +331,7 @@ passport.deserializeUser(function(id, done) {
 
 router.post('/login', (req, res, next)=> {
     passport.authenticate('local', {
-        successRedirect: '/admin',
+        successRedirect: '/my-account',
         failureRedirect: '/login',
         failureFlash: true
     })(req, res, next);

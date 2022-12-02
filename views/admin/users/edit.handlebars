@@ -13,16 +13,15 @@
         <label for="email">Email</label>
         <input name="email" type="email" class="form-control" id="email" value="{{user.email}}">
     </div>
-    {{!-- <div class="form-group">
+    <div class="form-group">
         <label for="role">Role</label>
         <select name="role" id="role" class="form-control">
-            {{#select post.status}}
-                <option value="public">Public</option>
-                <option value="private">Private</option>
-                <option value="draft">Draft</option>
+            {{#select user.role}}
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
             {{/select}}
         </select>
-    </div> --}}
+    </div>
 
     <a class="btn btn-primary" href="/admin/users/password/{{user.id}}" role="button">Change Password</a>
 

@@ -36,15 +36,12 @@
             {{/if}}
             {{#if user}}
               <li class="nav-item">
-                <a class="nav-link" href="/admin">Admin</a>
-              </li>
-              <li class="nav-item">
                 <a class="nav-link" href="/my-account">My Account</a>
               </li>
             {{/if}}
             {{#userRoleAuthenticated user.role 'admin'}}
               <li class="nav-item">
-                <a class="nav-link" href="/admin">Super Admin</a>
+                <a class="nav-link" href="/admin">Admin</a>
               </li>
             {{/userRoleAuthenticated}}
           </ul>

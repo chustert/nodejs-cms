@@ -1,0 +1,34 @@
+{{> home/my-account-nav}}
+
+<div class="container">
+    <h1 class="my-4">Edit User</h1>
+
+    <form action="/my-account/profile/edit?_method=PUT" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input name="firstName" type="text" class="form-control" id="firstName" value="{{user.firstName}}">
+        </div>
+        <div class="form-group">
+            <label for="lastName">First Name</label>
+            <input name="lastName" type="text" class="form-control" id="lastName" value="{{user.lastName}}">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input name="email" type="email" class="form-control" id="email" value="{{user.email}}">
+        </div>
+        {{!-- <div class="form-group">
+            <label for="role">Role</label>
+            <select name="role" id="role" class="form-control">
+                {{#select post.status}}
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                    <option value="draft">Draft</option>
+                {{/select}}
+            </select>
+        </div> --}}
+
+        <a class="btn btn-primary" href="/my-account/profile/password" role="button">Change Password</a>
+
+        <button type="submit" class="btn btn-primary">Update User</button>
+    </form>
+</div>

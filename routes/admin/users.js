@@ -11,7 +11,7 @@ const fs = require('fs');
 const { userAuthenticated } = require('../../helpers/authentication');
 const { adminAuthenticated } = require('../../helpers/admin-authentication');
 
-router.all('/*', userAuthenticated, (req, res, next)=> {
+router.all('/*', adminAuthenticated, (req, res, next)=> {
     req.app.locals.layout = 'admin';
     next();
 }); 
@@ -19,13 +19,6 @@ router.all('/*', userAuthenticated, (req, res, next)=> {
 router.get('/', adminAuthenticated, (req, res) => {
     User.find().then(users => {
         res.render('admin/users', {users: users});
-    }); 
-});
-
-router.get('/me', (req, res) => {
-    User.findById(req.user.id)
-    .then(user => {
-        res.render('admin/users/me', {user: user});
     }); 
 });
 
@@ -41,6 +34,7 @@ router.put('/edit/:id', (req, res) => {
         user.firstName = req.body.firstName;
         user.lastName = req.body.lastName;
         user.email = req.body.email;
+        user.role = req.body.role;
 
         user.save().then(updatedUser => {
 
@@ -54,9 +48,9 @@ router.put('/edit/:id', (req, res) => {
 
 router.get('/password/:id', (req, res) => {
     User.findOne({_id: req.params.id}).then(user => {
-            res.render('admin/users/password', {user: user})
-        });
-    }); 
+        res.render('admin/users/password', {user: user})
+    });
+}); 
 
 router.put('/password/:id', (req, res) => {
 

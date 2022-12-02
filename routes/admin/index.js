@@ -5,8 +5,9 @@ const Post = require('../../models/Post');
 const Comment = require('../../models/Comment');
 const Category = require('../../models/Category');
 const {userAuthenticated} = require('../../helpers/authentication');
+const { adminAuthenticated } = require('../../helpers/admin-authentication');
 
-router.all('/*', userAuthenticated, (req, res, next)=> {
+router.all('/*', adminAuthenticated, (req, res, next)=> {
     req.app.locals.layout = 'admin';
     next();
 }); 

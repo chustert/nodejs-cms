@@ -1,5 +1,5 @@
     <!-- Footer -->
-    <footer class="footer py-5 mt-5 bg-dark">
+    <footer class="sticky-footer py-5 mt-5 bg-dark">
       <div class="container">
         <p class="m-0 text-center text-white">Copyright &copy; Your Website 2022</p>
       </div>
@@ -9,3 +9,15 @@
     <!-- Bootstrap core JavaScript -->
     <script src="/js/jquery/jquery.min.js"></script>
     <script src="/js/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Applying offset for anchorscrolling so navbar is not in the way
+  function offsetAnchor() {
+      if(location.hash.length !== 0) {
+          window.scrollTo(window.scrollX, window.scrollY - 70);
+      }
+  }
+  // This will capture hash changes while on the page
+  window.addEventListener("hashchange", offsetAnchor);
+  window.setTimeout(offsetAnchor, 1);
+</script>

@@ -5,8 +5,11 @@
     <tr>
       <th>id</th>
       <th>Owner</th>
+      <th>Post Title</th>
       <th>Allow Comment</th>
       <th>Date</th>
+      <th>View</th>
+      <th>Delete</th>
     </tr>
   </thead>
   <tbody>
@@ -15,8 +18,10 @@
         <tr>
             <th>{{id}}</th>
             <td>{{user.firstName}}</td>
+            <td>{{post.title}}</td>
             <td><input data-id="{{id}}" type="checkbox" {{#if approveComment}} checked {{/if}} name="approveComment"></td>
             <td>{{generateDate date 'MMMM Do YYYY'}}</td>
+            <td><a href="/post/{{post.slug}}#{{id}}">View</a></td>
             <td>
                 <form action="/admin/comments/{{id}}?_method=DELETE" method="post">
                     <button type="submit" class="btn btn-danger">Delete</button>

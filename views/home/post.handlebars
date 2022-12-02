@@ -39,7 +39,7 @@
             <div class="card my-4">
               <h5 class="card-header">Leave a Comment:</h5>
               <div class="card-body">
-                <form action="/admin/comments" method="post">
+                <form action="/my-account/comments" method="post">
                   <div class="form-group">
                     <textarea name="body" class="form-control" rows="3"></textarea>
                     <input type="hidden" name="id" value="{{post.id}}">
@@ -66,7 +66,7 @@
           {{#each post.comments}}
 
             <!-- Single Comment -->
-            <div class="media mb-4">
+            <div id="{{id}}" class="media mb-4">
               <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
               <div class="media-body">
                 <h5 class="mt-0">{{user.firstName}}</h5>

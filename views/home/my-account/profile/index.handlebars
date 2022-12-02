@@ -1,9 +1,7 @@
-{{> home/my-account-nav}}    
+{{> home/my-account-nav}}
 
 <div class="container">
-    <h1 class="my-4">My Account
-        <small>{{user.firstName}}</small>
-    </h1>
+    <h1 class="my-4">Profile</h1>
 
     <div class="card">
         <div class="card-header">
@@ -13,6 +11,7 @@
             <h5 class="card-title">{{user.firstName}} {{user.lastName}}</h5>
             <h6 class="card-subtitle mb-2 text-muted">{{user.email}}</h6>
             <p class="card-text">Role: {{user.role}}</p>
+            <a href="/my-account/profile/edit" class="btn btn-primary">Edit Profile</a>
         </div>
     </div>
 </div>
