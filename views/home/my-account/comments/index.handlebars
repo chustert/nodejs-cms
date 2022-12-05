@@ -16,6 +16,11 @@
     </thead>
     <tbody>
 
+        {{#unless approveComment}}
+        {{/unless}}
+                <div class="alert alert-warning" role="alert">
+                    Yellow marked comments are currently being reviewed and can't be viewed yet.
+                </div>
         {{#each comments}}
             {{#if approveComment}}
                 <tr>
@@ -43,9 +48,6 @@
                         </form>
                     </td>
                 </tr>
-                <div class="alert alert-warning" role="alert">
-                    Your yellow marked comments are currently being reviewed and can't be viewed yet.
-                </div>
             {{/if}}
         {{/each}}
         

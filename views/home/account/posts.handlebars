@@ -1,0 +1,40 @@
+<div class="container">
+    <h1 class="my-4">Profile: {{user.firstName}}</h1>
+
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" href="/account/profile/{{user.id}}">User Details</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Posts</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>View Post</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each posts}}
+                        <tr>
+                            <td><img height="50px" src="/uploads/{{file}}" alt=""></td>
+                            <td>{{title}}</td>
+                            <td>{{category.name}}</td>
+                            <td>{{generateDate date 'MMMM Do YYYY'}}</td>
+                            <td><a href="/post/{{slug}}">View</a></td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

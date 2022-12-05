@@ -3,6 +3,7 @@ const router = express.Router();
 const Post = require('../../models/Post');
 const Category = require('../../models/Category');
 const Comment = require('../../models/Comment');
+const Message = require('../../models/Message');
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs')
 const passport = require('passport');
@@ -17,6 +18,9 @@ router.all('/*', (req, res, next)=> {
     next();
 }); 
 
+
+
+//************ HOME ************//
 router.get('/', (req, res)=> {
     const perPage = 10;
     const page = req.query.page || 1;
@@ -24,6 +28,8 @@ router.get('/', (req, res)=> {
     Post.find({})
         .skip((perPage * page) - perPage)
         .limit(perPage)
+        .populate('user')
+        .populate('category')
         .then(posts => {
             Post.count().then(postCount => {
                 Category.find({}).then(categories=> {
@@ -38,10 +44,83 @@ router.get('/', (req, res)=> {
         });            
 });
 
+
+
+//************ SINGLE POST ************//
+router.get('/post/:slug', (req, res) => {
+    Post.findOne({slug: req.params.slug})
+    .populate({path: 'comments', match: {approveComment: true}, populate: {path: 'user', model: 'users'}})
+    .populate('user')
+    .then(post => {
+        Category.find({}).then(categories => {
+            res.render('home/post', {post: post, categories: categories});
+        });
+        
+    }); 
+});
+
+
+//************ CATEGORIES ************//
+router.get('/category/:id', (req, res)=> {
+    const perPage = 10;
+    const page = req.query.page || 1;
+
+    Category.findOne({_id: req.params.id})
+    .then(category => {
+        Post.find({category: category})
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .populate('user')
+        .populate('category')
+        .then(posts => {
+            Post.count()
+            .then(postCount => {
+                Category.find({}).then(categories=> {
+                    res.render('home/category', {
+                        posts: posts, 
+                        category: category,
+                        categories: categories,
+                        current: parseInt(page),
+                        pages: Math.ceil(postCount / perPage)
+                    });    
+                });
+            });
+        });    
+    })        
+});
+
+
+
+//************ ABOUT ************//
 router.get('/about', (req, res)=> {
     res.render('home/about');
 });
 
+
+
+//************ ACCOUNTS ************//
+// Profile
+router.get('/account/profile/:id', userAuthenticated, (req, res)=> {
+    User.findById(req.params.id)
+    .then(user => {
+        res.render('home/account/profile', {user: user});
+    }); 
+});
+// Posts
+router.get('/account/profile/:id/posts', userAuthenticated, (req, res)=> {
+    User.findById(req.params.id)
+    .then(user => {
+        Post.find({user: req.params.id})
+        .populate('category')
+        .then(posts => {
+            res.render('home/account/posts', {posts: posts, user: user});
+        });
+    }); 
+     
+});
+
+
+//************ MY ACCOUNT ************//
 router.get('/my-account', userAuthenticated, (req, res)=> {
     const promises = [
         Post.count({user: req.user.id}).exec(),
@@ -60,13 +139,13 @@ router.get('/my-account/profile', userAuthenticated, (req, res)=> {
     }); 
 });
 
-router.get('/my-account/profile/edit', (req, res) => {
+router.get('/my-account/profile/edit', userAuthenticated, (req, res) => {
     User.findOne({_id: req.user.id}).then(user => {
         res.render('home/my-account/profile/edit', {user: user})
     });
 }); 
 
-router.put('/my-account/profile/edit', (req, res) => {
+router.put('/my-account/profile/edit', userAuthenticated, (req, res) => {
     User.findOne({_id: req.user.id}).then(user => {
 
         user.firstName = req.body.firstName;
@@ -83,13 +162,13 @@ router.put('/my-account/profile/edit', (req, res) => {
     }); 
 });
 
-router.get('/my-account/profile/password', (req, res) => {
+router.get('/my-account/profile/password', userAuthenticated, (req, res) => {
     User.findOne({_id: req.user.id}).then(user => {
         res.render('home/my-account/profile/password', {user: user})
     });
 }); 
 
-router.put('/my-account/profile/password', (req, res) => {
+router.put('/my-account/profile/password', userAuthenticated, (req, res) => {
 
     let errors = [];
 
@@ -138,13 +217,13 @@ router.get('/my-account/posts', userAuthenticated, (req, res)=> {
     }); 
 });
 
-router.get('/my-account/posts/create', (req, res) => {
+router.get('/my-account/posts/create', userAuthenticated, (req, res) => {
     Category.find({}).then(categories => {
         res.render('home/my-account/posts/create', {categories: categories})
     })
 });
 
-router.post('/my-account/posts/create', (req, res) => {
+router.post('/my-account/posts/create', userAuthenticated, (req, res) => {
     let errors = [];
 
     if(!req.body.title) {
@@ -204,10 +283,18 @@ router.post('/my-account/posts/create', (req, res) => {
     }
 });
 
-router.get('/my-account/posts/edit/:id', (req, res) => {
+router.get('/my-account/posts/edit/:id', userAuthenticated, (req, res) => {
     Post.findOne({_id: req.params.id}).then(post => {
         Category.find({}).then(categories => {
-            res.render('home/my-account/posts/edit', {post: post, categories: categories})
+            console.log(post.user.toString());
+            console.log(req.user.id);
+            if (post.user.toString() === req.user.id) {
+                res.render('home/my-account/posts/edit', {post: post, categories: categories})
+            } else {
+                res.status(401).json({
+                    msg: "You cannot edit someone else's post.",
+                });
+            }
         });
     }); 
 });
@@ -295,6 +382,37 @@ router.post('/my-account/comments', (req, res) => {
     })
 });
 
+router.get('/my-account/messages', userAuthenticated, (req, res)=> {
+    Message.find({user: req.user.id})
+    .populate('user')
+    .then(messages => {
+        res.render('home/my-account/messages', {messages: messages});
+    })
+});
+
+router.post('/my-account/messages', (req, res) => {
+    User.findOne({_id: req.user.id})
+    .then(fromUser => {
+        User.findOne({_id: req.body.id})
+        .then(toUser => {
+            const newMessage = new Message({
+                fromUser: req.user.id,
+                body: req.body.body,
+                toUser: req.body.id            
+            });
+            fromUser.sentMessages.push(newMessage);
+            toUser.receivedMessages.push(newMessage);
+            fromUser.save().then(savedFromUser => {
+                toUser.save().then(savedToUser => {
+                    newMessage.save().then(savedMessage => {
+                        req.flash('success_message', `Message successfully sent.`);
+                        res.redirect(`/account/profile/${toUser._id}`);
+                    })
+                });
+            });
+        })
+    })
+});
 
 
 
@@ -303,13 +421,13 @@ router.post('/my-account/comments', (req, res) => {
 
 
 
+//************ AUTHENTICATION ************//
 
 router.get('/login', (req, res)=> {
     res.render('home/login');
 });
 
 // APP LOGIN
-
 passport.use(new LocalStrategy({usernameField: 'email'}, (email, password, done) => {
     User.findOne({ email: email }).then(user => {
         if(!user) return done(null, false, {message: 'No user found.'});
@@ -342,11 +460,6 @@ router.post('/login', (req, res, next)=> {
         failureFlash: true
     })(req, res, next);
 });
-
-
-
-
-
 
 router.get('/logout', (req, res) => {
     req.logout();
@@ -417,18 +530,6 @@ router.post('/register', (req, res)=> {
             }
         })
     }
-});
-
-router.get('/post/:slug', (req, res) => {
-    Post.findOne({slug: req.params.slug})
-    .populate({path: 'comments', match: {approveComment: true}, populate: {path: 'user', model: 'users'}})
-    .populate('user')
-    .then(post => {
-        Category.find({}).then(categories => {
-            res.render('home/post', {post: post, categories: categories});
-        });
-        
-    }); 
 });
 
 module.exports = router;

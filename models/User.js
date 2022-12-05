@@ -22,6 +22,14 @@ const UserSchema = new Schema({
         type: String,
         default: 'user'
     },
+    sentMessages: [{
+        type: Schema.Types.ObjectId,
+        ref: 'messages'
+    }],
+    receivedMessages: [{
+        type: Schema.Types.ObjectId,
+        ref: 'messages'
+    }],
     // USE THIS IF REFERENCES IN THE USER SCHEMA ARE NEEDED - not complete yet, only works for posts
     posts: [{
         type: Schema.Types.ObjectId,
