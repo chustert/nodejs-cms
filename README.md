@@ -1,6 +1,6 @@
 # nodejs-cms
 
-A simple content management system based in Node.js
+A simple content management system based on Node.js, Express.js and Mongoose with Handlebars for templating.
 
 ### Features
 - Home page with blog posts
@@ -9,6 +9,7 @@ A simple content management system based in Node.js
 - Admin is able to log into admin area
 - Users can see each other's profiles
 - Users can message each other
+
 
 #### Account
 Each user has their own account with:
@@ -25,3 +26,22 @@ Each user has their own account with:
 - Can create, edit and delete categories
 - Can see all comments from all users; can view, allow and delete them
 - Can see, edit and delete all profiles of all users
+
+##### Dependencies
+- [bcrypt.js](https://www.npmjs.com/package/bcryptjs)
+- [body-parser](https://www.npmjs.com/package/body-parser)
+- [connect-flash](https://www.npmjs.com/package/connect-flash)
+- [express](https://www.npmjs.com/package/express)
+- [express-fileupload](https://www.npmjs.com/package/express-fileupload)
+- [express-handlebars](https://www.npmjs.com/package/express-handlebars)
+- [express-session](https://www.npmjs.com/package/express-session)
+- [handlebars](https://www.npmjs.com/package/handlebars)
+- [method-override](https://www.npmjs.com/package/method-override)
+- [moment](https://www.npmjs.com/package/moment)
+- [mongoose](https://www.npmjs.com/package/mongoose)
+- [mongoose-url-slugs](https://www.npmjs.com/package/mongoose-url-slugs)
+- [passport](https://www.npmjs.com/package/passport)
+- [passport-local](https://www.npmjs.com/package/passport-local)
+
+
+
