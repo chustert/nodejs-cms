@@ -383,11 +383,57 @@ router.post('/my-account/comments', (req, res) => {
 });
 
 router.get('/my-account/messages', userAuthenticated, (req, res)=> {
-    Message.find({user: req.user.id})
-    .populate('user')
+    Message.find({$or: [{fromUser: req.user.id}, {toUser: req.user.id}]})
+    .populate('fromUser')
+    .populate('toUser')
     .then(messages => {
-        res.render('home/my-account/messages', {messages: messages});
-    })
+        const usersArray = [];
+        Promise.all(messages.map(message => {
+            return User.find({$or: [{_id: message.fromUser._id}, {_id: message.toUser._id}]})
+            .where('_id').ne(req.user.id)
+            .then(user => {                
+                let userId = user[0]._id
+                usersArray.push(userId.toString());
+            })
+        }))
+        .then(() => {
+            let uniqueUsersArray = usersArray.filter((v, i, a) => a.indexOf(v) === i);
+            User.find({_id: uniqueUsersArray})
+            .then(users => {
+                res.render('home/my-account/messages', {messages: messages, users: users});
+            });
+        });
+    });
+});
+
+router.get('/my-account/messages/:id', userAuthenticated, (req, res)=> {
+    Message.find({$or: [{$and: [{fromUser: req.user.id}, {toUser: req.params.id}]}, {$and: [{fromUser: req.params.id}, {toUser: req.user.id}]}]})
+    .populate('fromUser')
+    .populate('toUser')
+    .then(singleStreamMessages => {
+        Message.find({$or: [{fromUser: req.user.id}, {toUser: req.user.id}]})
+        .then(messages => {
+            const usersArray = [];
+            Promise.all(messages.map(message => {
+                return User.find({$or: [{_id: message.fromUser._id}, {_id: message.toUser._id}]})
+                .where('_id').ne(req.user.id)
+                .then(user => {                
+                    let userId = user[0]._id
+                    usersArray.push(userId.toString());
+                })
+            }))
+            .then(() => {
+                let uniqueUsersArray = usersArray.filter((v, i, a) => a.indexOf(v) === i);
+                User.find({_id: uniqueUsersArray})
+                .then(users => {
+                    User.findOne({_id: req.params.id})
+                    .then(messagedUser => {
+                        res.render('home/my-account/messages', {messages: singleStreamMessages, users: users, messagedUser: messagedUser});
+                    })
+                });
+            });
+        })
+    });
 });
 
 router.post('/my-account/messages', (req, res) => {
@@ -406,7 +452,7 @@ router.post('/my-account/messages', (req, res) => {
                 toUser.save().then(savedToUser => {
                     newMessage.save().then(savedMessage => {
                         req.flash('success_message', `Message successfully sent.`);
-                        res.redirect(`/account/profile/${toUser._id}`);
+                        res.redirect(`/my-account/messages/${toUser._id}`);
                     })
                 });
             });

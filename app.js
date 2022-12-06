@@ -23,9 +23,9 @@ mongoose.connect(mongoDbUrl).then(db=> {
 app.use(express.static(path.join(__dirname, 'public'))); // allows using static files in the piblic directory
 
 // set view engine
-const {select, generateDate, paginate} = require('./helpers/handlebars-helpers');
+const {select, generateDate, paginate, notEqual} = require('./helpers/handlebars-helpers');
 const {userRoleAuthenticated} = require('./helpers/role-authentication');
-app.engine('handlebars', exphbs({handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home', helpers: {select: select, generateDate: generateDate, paginate: paginate, userRoleAuthenticated: userRoleAuthenticated}}));
+app.engine('handlebars', exphbs({handlebars: allowInsecurePrototypeAccess(Handlebars), defaultLayout: 'home', helpers: {select: select, generateDate: generateDate, paginate: paginate, notEqual: notEqual, userRoleAuthenticated: userRoleAuthenticated}}));
 
 app.set('view engine', 'handlebars');
 
