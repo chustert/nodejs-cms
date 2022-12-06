@@ -1,0 +1,180 @@
+Date : 2022-12-06 15:15:28
+Directory : /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms
+Total : 112 files,  43254 codes, 4049 comments, 6307 blanks, all 53610 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| CSS        |         14 |     19,129 |         84 |      2,212 |     21,425 |
+| JavaScript |         31 |     14,339 |      3,769 |      3,852 |     21,960 |
+| XML        |          1 |      2,671 |          0 |          1 |      2,672 |
+| JSON       |          2 |      2,292 |          0 |          2 |      2,294 |
+| Less       |         14 |      1,758 |         44 |         48 |      1,850 |
+| SCSS       |         14 |      1,758 |         44 |         48 |      1,850 |
+| Handlebars |         35 |      1,306 |        108 |        144 |      1,558 |
+| Markdown   |          1 |          1 |          0 |          0 |          1 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                         | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                            |        112 |     43,254 |      4,049 |      6,307 |     53,610 |
+| config                                                                                                       |          3 |         11 |          0 |          4 |         15 |
+| helpers                                                                                                      |          5 |         83 |          1 |         16 |        100 |
+| models                                                                                                       |          5 |        141 |          1 |         11 |        153 |
+| public                                                                                                       |         54 |     38,833 |      3,594 |      6,027 |     48,454 |
+| public/css                                                                                                   |         37 |     16,202 |        131 |      1,159 |     17,492 |
+| public/css/font-awesome                                                                                      |         31 |      8,515 |        101 |         99 |      8,715 |
+| public/css/font-awesome/css                                                                                  |          2 |      2,328 |         13 |          2 |      2,343 |
+| public/css/font-awesome/fonts                                                                                |          1 |      2,671 |          0 |          1 |      2,672 |
+| public/css/font-awesome/less                                                                                 |         14 |      1,758 |         44 |         48 |      1,850 |
+| public/css/font-awesome/scss                                                                                 |         14 |      1,758 |         44 |         48 |      1,850 |
+| public/js                                                                                                    |         17 |     22,631 |      3,463 |      4,868 |     30,962 |
+| public/js/admin                                                                                              |          2 |          2 |         13 |          2 |         17 |
+| public/js/bootstrap                                                                                          |         10 |     15,801 |      1,734 |      2,923 |     20,458 |
+| public/js/bootstrap/css                                                                                      |          6 |      9,114 |         41 |      1,150 |     10,305 |
+| public/js/bootstrap/js                                                                                       |          4 |      6,687 |      1,693 |      1,773 |     10,153 |
+| public/js/jquery                                                                                             |          2 |      6,627 |      1,698 |      1,934 |     10,259 |
+| public/js/jquery-easing                                                                                      |          3 |        201 |         18 |          9 |        228 |
+| routes                                                                                                       |          6 |        527 |        335 |         88 |        950 |
+| routes/admin                                                                                                 |          5 |         46 |        318 |          5 |        369 |
+| routes/home                                                                                                  |          1 |        481 |         17 |         83 |        581 |
+| views                                                                                                        |         35 |      1,306 |        108 |        144 |      1,558 |
+| views/admin                                                                                                  |          9 |        242 |          6 |         19 |        267 |
+| views/admin/categories                                                                                       |          2 |         52 |          0 |          3 |         55 |
+| views/admin/comments                                                                                         |          1 |         31 |          0 |          4 |         35 |
+| views/admin/posts                                                                                            |          2 |         81 |          0 |          4 |         85 |
+| views/admin/users                                                                                            |          3 |         74 |          0 |          6 |         80 |
+| views/home                                                                                                   |         17 |        581 |         64 |         75 |        720 |
+| views/home/account                                                                                           |          2 |         72 |          0 |          2 |         74 |
+| views/home/my-account                                                                                        |          9 |        315 |         19 |         27 |        361 |
+| views/home/my-account/comments                                                                               |          1 |         52 |          0 |          5 |         57 |
+| views/home/my-account/messages                                                                               |          1 |         59 |          9 |          3 |         71 |
+| views/home/my-account/posts                                                                                  |          3 |        129 |          0 |          6 |        135 |
+| views/home/my-account/profile                                                                                |          3 |         56 |         10 |         10 |         76 |
+| views/layouts                                                                                                |          2 |        182 |         10 |         37 |        229 |
+| views/partials                                                                                               |          7 |        301 |         28 |         13 |        342 |
+| views/partials/admin                                                                                         |          2 |        140 |          1 |          4 |        145 |
+| views/partials/home                                                                                          |          5 |        161 |         27 |          9 |        197 |
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                     | language   | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/README.md                                              | Markdown   |          1 |          0 |          0 |          1 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/app.js                                                 | JavaScript |         60 |         10 |         15 |         85 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/config/database.js                                     | JavaScript |          5 |          0 |          0 |          5 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/config/dev-database.js                                 | JavaScript |          3 |          0 |          2 |          5 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/config/prod-database.js                                | JavaScript |          3 |          0 |          2 |          5 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/helpers/admin-authentication.js                        | JavaScript |         11 |          0 |          0 |         11 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/helpers/authentication.js                              | JavaScript |          8 |          0 |          1 |          9 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/helpers/handlebars-helpers.js                          | JavaScript |         44 |          1 |         12 |         57 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/helpers/role-authentication.js                         | JavaScript |          8 |          0 |          1 |          9 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/helpers/upload-helper.js                               | JavaScript |         12 |          0 |          2 |         14 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/models/Category.js                                     | JavaScript |          9 |          0 |          2 |         11 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/models/Comment.js                                      | JavaScript |         25 |          0 |          2 |         27 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/models/Message.js                                      | JavaScript |         21 |          0 |          2 |         23 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/models/Post.js                                         | JavaScript |         45 |          0 |          3 |         48 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/models/User.js                                         | JavaScript |         41 |          1 |          2 |         44 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/package-lock.json                                      | JSON       |      2,263 |          0 |          1 |      2,264 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/package.json                                           | JSON       |         29 |          0 |          1 |         30 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/blog-home.css                               | CSS        |          8 |          5 |          3 |         16 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/blog-post.css                               | CSS        |          8 |          5 |          3 |         16 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/bootstrap-switch.min.css                    | CSS        |          1 |          8 |          1 |         10 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/bootstrap.min.css                           | CSS        |      7,361 |          7 |      1,006 |      8,374 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/css/font-awesome.css           | CSS        |      2,327 |         10 |          1 |      2,338 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/css/font-awesome.min.css       | CSS        |          1 |          3 |          1 |          5 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/fonts/fontawesome-webfont.svg  | XML        |      2,671 |          0 |          1 |      2,672 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/animated.less             | Less       |         28 |          2 |          5 |         35 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/bordered-pulled.less      | Less       |         17 |          3 |          6 |         26 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/core.less                 | Less       |          8 |          2 |          3 |         13 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/fixed-width.less          | Less       |          4 |          2 |          1 |          7 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/font-awesome.less         | Less       |         13 |          4 |          2 |         19 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/icons.less                | Less       |        786 |          2 |          2 |        790 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/larger.less               | Less       |          9 |          3 |          2 |         14 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/list.less                 | Less       |         16 |          2 |          2 |         20 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/mixins.less               | Less       |         41 |         10 |         10 |         61 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/path.less                 | Less       |         11 |          3 |          2 |         16 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/rotated-flipped.less      | Less       |         12 |          4 |          5 |         21 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/screen-reader.less        | Less       |          2 |          2 |          2 |          6 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/stacked.less              | Less       |         17 |          2 |          2 |         21 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/less/variables.less            | Less       |        794 |          3 |          4 |        801 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_animated.scss            | SCSS       |         28 |          2 |          5 |         35 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_bordered-pulled.scss     | SCSS       |         17 |          3 |          6 |         26 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_core.scss                | SCSS       |          8 |          2 |          3 |         13 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_fixed-width.scss         | SCSS       |          4 |          2 |          1 |          7 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_icons.scss               | SCSS       |        786 |          2 |          2 |        790 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_larger.scss              | SCSS       |          9 |          3 |          2 |         14 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_list.scss                | SCSS       |         16 |          2 |          2 |         20 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_mixins.scss              | SCSS       |         41 |         10 |         10 |         61 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_path.scss                | SCSS       |         11 |          3 |          2 |         16 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_rotated-flipped.scss     | SCSS       |         12 |          4 |          5 |         21 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_screen-reader.scss       | SCSS       |          2 |          2 |          2 |          6 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_stacked.scss             | SCSS       |         17 |          2 |          2 |         21 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/_variables.scss           | SCSS       |        794 |          3 |          4 |        801 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/font-awesome/scss/font-awesome.scss         | SCSS       |         13 |          4 |          2 |         19 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/sb-admin.css                                | CSS        |        297 |          5 |         45 |        347 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/css/styles.css                                  | CSS        |         12 |          0 |          2 |         14 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/admin/bootstrap-switch.min.js                | JavaScript |          1 |          8 |          2 |         11 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/admin/sb-admin.min.js                        | JavaScript |          1 |          5 |          0 |          6 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/bootstrap/css/bootstrap-grid.css             | CSS        |      1,473 |          7 |         87 |      1,567 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/bootstrap/css/bootstrap-grid.min.css         | CSS        |          1 |          6 |          0 |          7 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/bootstrap/css/bootstrap-reboot.css           | CSS        |        277 |          8 |         57 |        342 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/bootstrap/css/bootstrap-reboot.min.css       | CSS        |          1 |          7 |          0 |          8 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/bootstrap/css/bootstrap.css                  | CSS        |      7,361 |          7 |      1,006 |      8,374 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/bootstrap/css/bootstrap.min.css              | CSS        |          1 |          6 |          0 |          7 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/bootstrap/js/bootstrap.bundle.js             | JavaScript |      3,916 |      1,337 |      1,035 |      6,288 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/bootstrap/js/bootstrap.bundle.min.js         | JavaScript |          1 |          6 |          0 |          7 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/bootstrap/js/bootstrap.js                    | JavaScript |      2,769 |        344 |        738 |      3,851 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/bootstrap/js/bootstrap.min.js                | JavaScript |          1 |          6 |          0 |          7 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/jquery-easing/jquery.easing.compatibility.js | JavaScript |         49 |          9 |          2 |         60 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/jquery-easing/jquery.easing.js               | JavaScript |        151 |          9 |          7 |        167 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/jquery-easing/jquery.easing.min.js           | JavaScript |          1 |          0 |          0 |          1 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/jquery/jquery.js                             | JavaScript |      6,624 |      1,697 |      1,933 |     10,254 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/js/jquery/jquery.min.js                         | JavaScript |          3 |          1 |          1 |          5 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/routes/admin/categories.js                             | JavaScript |          7 |         61 |          1 |         69 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/routes/admin/comments.js                               | JavaScript |          8 |         30 |          1 |         39 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/routes/admin/index.js                                  | JavaScript |          9 |         43 |          1 |         53 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/routes/admin/posts.js                                  | JavaScript |         10 |         76 |          1 |         87 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/routes/admin/users.js                                  | JavaScript |         12 |        108 |          1 |        121 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/routes/home/index.js                                   | JavaScript |        481 |         17 |         83 |        581 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/admin/categories/edit.handlebars                 | Handlebars |         13 |          0 |          1 |         14 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/admin/categories/index.handlebars                | Handlebars |         39 |          0 |          2 |         41 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/admin/comments/index.handlebars                  | Handlebars |         31 |          0 |          4 |         35 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/admin/index.handlebars                           | Handlebars |          4 |          6 |          2 |         12 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/admin/posts/edit.handlebars                      | Handlebars |         42 |          0 |          1 |         43 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/admin/posts/index.handlebars                     | Handlebars |         39 |          0 |          3 |         42 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/admin/users/edit.handlebars                      | Handlebars |         26 |          0 |          3 |         29 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/admin/users/index.handlebars                     | Handlebars |         31 |          0 |          1 |         32 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/admin/users/password.handlebars                  | Handlebars |         17 |          0 |          2 |         19 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/about.handlebars                            | Handlebars |          3 |          0 |          0 |          3 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/account/posts.handlebars                    | Handlebars |         39 |          0 |          1 |         40 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/account/profile.handlebars                  | Handlebars |         33 |          0 |          1 |         34 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/category.handlebars                         | Handlebars |         30 |          7 |          9 |         46 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/index.handlebars                            | Handlebars |         30 |          7 |          9 |         46 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/login.handlebars                            | Handlebars |         28 |          6 |          1 |         35 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/my-account/comments/index.handlebars        | Handlebars |         52 |          0 |          5 |         57 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/my-account/index.handlebars                 | Handlebars |         19 |          0 |          3 |         22 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/my-account/messages/index.handlebars        | Handlebars |         59 |          9 |          3 |         71 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/my-account/posts/create.handlebars          | Handlebars |         45 |          0 |          3 |         48 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/my-account/posts/edit.handlebars            | Handlebars |         44 |          0 |          1 |         45 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/my-account/posts/index.handlebars           | Handlebars |         40 |          0 |          2 |         42 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/my-account/profile/edit.handlebars          | Handlebars |         20 |         10 |          4 |         34 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/my-account/profile/index.handlebars         | Handlebars |         16 |          0 |          2 |         18 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/my-account/profile/password.handlebars      | Handlebars |         20 |          0 |          4 |         24 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/post.handlebars                             | Handlebars |         61 |         24 |         27 |        112 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/home/register.handlebars                         | Handlebars |         42 |          1 |          0 |         43 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/layouts/admin.handlebars                         | Handlebars |        147 |          9 |         15 |        171 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/layouts/home.handlebars                          | Handlebars |         35 |          1 |         22 |         58 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/partials/admin/admin-side-nav.handlebars         | Handlebars |         44 |          0 |          1 |         45 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/partials/admin/footer.handlebars                 | Handlebars |         96 |          1 |          3 |        100 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/partials/home/footer.handlebars                  | Handlebars |         61 |          0 |          3 |         64 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/partials/home/form-msgs.handlebars               | Handlebars |         15 |          0 |          2 |         17 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/partials/home/home-nav.handlebars                | Handlebars |         44 |          6 |          0 |         50 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/partials/home/my-account-nav.handlebars          | Handlebars |         20 |          4 |          0 |         24 |
+| /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/views/partials/home/sidebar.handlebars                 | Handlebars |         21 |         17 |          4 |         42 |
+| Total                                                                                                        |            |     43,254 |      4,049 |      6,307 |     53,610 |
++--------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
