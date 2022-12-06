@@ -360,7 +360,10 @@ router.get('/my-account/comments', userAuthenticated, (req, res)=> {
     .populate('user')
     .populate('post')
     .then(comments => {
-        res.render('home/my-account/comments', {comments: comments});
+        let notAllowedComment = comments.find(el => {
+            if (el.approveComment === false) return true;
+        });
+        res.render('home/my-account/comments', {comments: comments, notAllowedComment: notAllowedComment});
     })
 });
 
