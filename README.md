@@ -27,6 +27,7 @@ Each user has their own account with:
 - Can see all comments from all users; can view, allow and delete them
 - Can see, edit and delete all profiles of all users
 
+
 ##### Dependencies
 - [bcrypt.js](https://www.npmjs.com/package/bcryptjs)
 - [body-parser](https://www.npmjs.com/package/body-parser)
