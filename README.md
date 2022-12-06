@@ -2,7 +2,7 @@
 
 A simple content management system based in Node.js
 
-###Features
+### Features
 - Home page with blog posts
 - Login and registration
 - Users can either be 'admin' or 'user'
@@ -10,7 +10,7 @@ A simple content management system based in Node.js
 - Users can see each other's profiles
 - Users can message each other
 
-####Account
+#### Account
 Each user has their own account with:
 - Dashboard (Some account details and chart with amount of posts and comments)
 - Profile (which can be edited)
@@ -19,7 +19,7 @@ Each user has their own account with:
 - Messages: View all messages that were sent between the logged in user and other users
 
 
-####Admin Area:
+#### Admin Area:
 - Dashboard with chart (amount of total posts, total categories, totoal comments)
 - Can see all posts from all users; can view, edit and delete them
 - Can create, edit and delete categories
