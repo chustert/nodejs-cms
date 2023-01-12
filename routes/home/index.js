@@ -6,12 +6,20 @@ const Comment = require('../../models/Comment');
 const Message = require('../../models/Message');
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs')
+const crypto = require("crypto");
 const passport = require('passport');
 const { disconnect } = require('mongoose');
 const {isEmpty, uploadDir} = require('../../helpers/upload-helper');
 const fs = require('fs');
 const LocalStrategy = require('passport-local').Strategy;
 const {userAuthenticated} = require('../../helpers/authentication');
+const Token = require('../../models/Token');
+const sendEmail = require("../../helpers/email/sendEmail");
+const dotenv = require('dotenv');
+dotenv.config({ path: './config.env' });
+const qs = require('qs');
+
+const clientURL = process.env.CLIENT_URL;
 
 router.all('/*', (req, res, next)=> {
     req.app.locals.layout = 'home';
@@ -508,6 +516,117 @@ router.post('/login', (req, res, next)=> {
         failureRedirect: '/login',
         failureFlash: true
     })(req, res, next);
+});
+
+router.get('/forgot-password', (req, res)=> {
+    res.render('home/forgot-password');
+});
+
+router.post('/forgot-password', (req, res) => {
+    let errors = [];
+
+    if(!req.body.email) {
+        errors.push({message: 'Please add your email address.'});
+    }
+
+    if (errors.length > 0) {
+        res.render('home/forgot-password', {
+            errors: errors,
+            email: req.body.email
+        })
+    } else {
+        User.findOne({email: req.body.email}).then(user => {
+            if(!user) {
+                req.flash('error_message', 'Email does not exists. Please register or try another email address.');
+                res.redirect('/forgot-password');
+            } else {
+                // If the email address is valid, generate a reset token and send token/instrcutions to the user via email. 
+                // The reset token should be a unique, cryptographically secure string that can be used to 
+                // verify the user's identity when they request to reset their password.
+
+                // Check if there is an existing token that has been created for this user. 
+                // If one exists, we delete the token.
+                Token.findOne({ userId: user._id }).then(token => {
+                    if (token) {
+                        token.remove();
+                    }
+
+                    let resetToken = crypto.randomBytes(32).toString("hex");
+                    bcrypt.genSalt(10, (err, salt) => {
+                        bcrypt.hash(resetToken, salt, (err, hash) => {
+                            const newToken = new Token({
+                                userId: user._id,
+                                token: hash,
+                                createdAt: Date.now(),
+                            }).save();
+    
+                            let link = new URL(`${clientURL}/reset-password?token=${resetToken}&id=${user._id}`);
+                            sendEmail(user.email, "Password Reset Request TEST", {name: user.name, link: link}, "./template/requestResetPasswordEmail.handlebars");
+                            // return link;
+                            req.flash('success_message', `We sent you an email with a link to reset your password. Don't forget to check your spam folder!`);
+                            res.redirect('/forgot-password');
+                        });
+                    });
+                })
+            }
+        })
+    }
+
+})
+
+router.get('/reset-password', (req, res)=> {
+    res.render('home/reset-password');
+});
+
+router.post('/reset-password', (req, res) => {
+    Token.findOne({ userId: req.body.id }).then(token => {
+        if(!token) {
+            req.flash('error_message', 'Invalid or expired password reset token. Try again.');
+            return res.redirect('/forgot-password');
+        }
+        
+        console.log(token.token);
+        console.log(req.body.token);
+        bcrypt.compare(req.body.token, token.token, (err, match) => {
+            if (!match) {
+                req.flash('error_message', 'Reset token does not match. Try again.');
+                return res.redirect('/forgot-password');
+            }
+        });
+
+        let errors = [];
+
+        if(!req.body.password) {
+            errors.push({message: 'Please add a password.'});
+        }
+        if(!req.body.passwordConfirm) {
+            errors.push({message: 'The password confirmation field cannot be blank.'});
+        }
+        if(req.body.password !== req.body.passwordConfirm) {
+            errors.push({message: "Password fields don't match."});
+        }
+
+        if (errors.length > 0) {
+            req.flash('error_message', errors.map(error => error.message).join(' '));
+            res.redirect(302, `/reset-password?token=${req.body.token}&id=${req.body.id}`);
+        } else {
+            bcrypt.genSalt(10, (err, salt) => {
+                bcrypt.hash(req.body.password, salt, (err, hash) => {
+                    User.updateOne(
+                        {_id: req.body.id},
+                        {$set: {password: hash}},
+                        {new: true}
+                        ).then(() => {
+                            User.findOne({_id: req.body.id}).then(user => {
+                                req.flash('success_message', `User ${user.email} was successfully updated. Please log in.`);
+                                token.remove();
+                                res.redirect('/login');
+                            });
+                        });
+                });
+            });
+        }
+    })
 });
 
 router.get('/logout', (req, res) => {

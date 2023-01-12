@@ -5,14 +5,18 @@ const UserSchema = new Schema({
     firstName: {
         type: String,
         required: true,
+        trim: true,
     },
     lastName: {
         type: String,
         required: true,
+        trim: true,
     },
     email: {
         type: String,
         required: true,
+        trim: true,
+        unique: true,
     },
     password: {
         type: String,
@@ -39,6 +43,12 @@ const UserSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'comments'
     }]
-}, {usePushEach: true});
+}, 
+{
+    usePushEach: true
+},
+{
+    timestamps: true
+});
 
 module.exports = mongoose.model('users', UserSchema);
