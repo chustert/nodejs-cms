@@ -19,7 +19,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 const qs = require('qs');
 
-const clientURL = process.env.CLIENT_URL;
+const clientURL = process.env.BASE_URL || process.env.CLIENT_URL_DEV;
 
 router.all('/*', (req, res, next)=> {
     req.app.locals.layout = 'home';
@@ -559,7 +559,6 @@ router.post('/forgot-password', (req, res) => {
                                 token: hash,
                                 createdAt: Date.now(),
                             }).save();
-    
                             let link = new URL(`${clientURL}/reset-password?token=${resetToken}&id=${user._id}`);
                             sendEmail(user.email, "Password Reset Request TEST", {name: user.name, link: link}, "./template/requestResetPasswordEmail.handlebars");
                             // return link;
