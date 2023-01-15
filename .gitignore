@@ -30,3 +30,5 @@ Thumbs.db
 ######################
 *.env
 node_modules
+*.cert
+*.key

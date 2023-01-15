@@ -93,8 +93,15 @@ const port = process.env.PORT || 3000;
 //     console.log(`Listening on port ${port}`);
 // });
 
-// Creating https server by passing options and app object
-https.createServer(options, app)
-.listen(port, function (req, res) {
-  console.log(`Server started at port ${port}`);
-});
+
+if(process.env.NODE_ENV === 'production') {
+    app.listen(port, ()=> {
+        console.log(`Listening on port ${port}`);
+    });
+} else {
+    // Creating https server by passing options and app object
+    https.createServer(options, app)
+    .listen(port, () => {
+    console.log(`Server started at port ${port}`);
+    });
+}
