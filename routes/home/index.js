@@ -628,6 +628,8 @@ router.post('/reset-password', (req, res) => {
                         {new: true}
                         ).then(() => {
                             User.findOne({_id: req.body.id}).then(user => {
+                                let contactLink = new URL(`${protocol}${clientURL}/contact`);
+                                sendEmail(user.email, "Password Reset Confirmation TEST", {name: user.name, link: contactLink}, "./template/confirmResetPasswordEmail.handlebars");
                                 req.flash('success_message', `User ${user.email} was successfully updated. Please log in.`);
                                 token.remove();
                                 res.redirect('/login');
