@@ -1,3 +1,5 @@
+const https = require("https");
+const fs = require("fs");
 const express = require('express');
 const app = express(); // Create an app from the express function
 const path = require('path');
@@ -78,8 +80,21 @@ app.use('/admin/categories', categories);
 app.use('/admin/comments', comments);
 app.use('/admin/users', users);
 
-const port = process.env.PORT || 4500;
+// Creating object of key and certificate for SSL
+const options = {
+    key: fs.readFileSync("server.key"),
+    cert: fs.readFileSync("server.cert"),
+  };
 
-app.listen(port, ()=> {
-    console.log(`Listening on port ${port}`);
+// const port = process.env.PORT || 4500;
+const port = process.env.PORT || 3000;
+
+// app.listen(port, ()=> {
+//     console.log(`Listening on port ${port}`);
+// });
+
+// Creating https server by passing options and app object
+https.createServer(options, app)
+.listen(port, function (req, res) {
+  console.log(`Server started at port ${port}`);
 });

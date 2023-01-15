@@ -20,14 +20,14 @@ dotenv.config({ path: './config.env' });
 const qs = require('qs');
 
 let clientURL = '';
-let protocol = '';
+// let protocol = '';
 
 if(process.env.NODE_ENV === 'production') {
     clientURL = process.env.BASE_URL;
-    protocol = "https://";
+    // protocol = "https://";
 } else {
     clientURL = process.env.CLIENT_URL_DEV;
-    protocol = "http://";
+    // protocol = "http://";
 }
 
 // const clientURL = process.env.BASE_URL || process.env.CLIENT_URL_DEV;
@@ -570,7 +570,7 @@ router.post('/forgot-password', (req, res) => {
                                 token: hash,
                                 createdAt: Date.now(),
                             }).save();
-                            let link = new URL(`${protocol}${clientURL}/reset-password?token=${resetToken}&id=${user._id}`);
+                            let link = new URL(`${clientURL}/reset-password?token=${resetToken}&id=${user._id}`);
                             sendEmail(user.email, "Password Reset Request TEST", {name: user.name, link: link}, "./template/requestResetPasswordEmail.handlebars");
                             // return link;
                             req.flash('success_message', `We sent you an email with a link to reset your password. Don't forget to check your spam folder!`);
@@ -628,8 +628,8 @@ router.post('/reset-password', (req, res) => {
                         {new: true}
                         ).then(() => {
                             User.findOne({_id: req.body.id}).then(user => {
-                                let contactLink = new URL(`${protocol}${clientURL}/contact`);
-                                sendEmail(user.email, "Password Reset Confirmation TEST", {name: user.name, link: contactLink}, "./template/confirmResetPasswordEmail.handlebars");
+                                let contactLink = new URL(`${clientURL}/contact`);
+                                sendEmail(user.email, "Password Reset Confirmation TEST", {name: user.name, contactLink: contactLink}, "./template/confirmResetPasswordEmail.handlebars");
                                 req.flash('success_message', `User ${user.email} was successfully updated. Please log in.`);
                                 token.remove();
                                 res.redirect('/login');
