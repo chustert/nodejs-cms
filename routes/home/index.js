@@ -225,32 +225,79 @@ router.get('/post/:slug', async (req, res) => {
 
 
 //************ CATEGORIES ************//
-router.get('/category/:id', (req, res)=> {
+// router.get('/category/:id', (req, res)=> {
+//     const perPage = 10;
+//     const page = req.query.page || 1;
+
+//     Category.findOne({_id: req.params.id})
+//     .then(category => {
+//         Post.find({category: category})
+//         .skip((perPage * page) - perPage)
+//         .limit(perPage)
+//         .populate('user')
+//         .populate('category')
+//         .then(posts => {
+//             Post.count()
+//             .then(postCount => {
+//                 Category.find({}).then(categories=> {
+//                     res.render('home/category', {
+//                         posts: posts, 
+//                         category: category,
+//                         categories: categories,
+//                         current: parseInt(page),
+//                         pages: Math.ceil(postCount / perPage)
+//                     });    
+//                 });
+//             });
+//         });    
+//     })        
+// });
+
+
+router.get('/category/:id', async (req, res) => {
     const perPage = 10;
     const page = req.query.page || 1;
 
-    Category.findOne({_id: req.params.id})
-    .then(category => {
-        Post.find({category: category})
-        .skip((perPage * page) - perPage)
-        .limit(perPage)
-        .populate('user')
-        .populate('category')
-        .then(posts => {
-            Post.count()
-            .then(postCount => {
-                Category.find({}).then(categories=> {
-                    res.render('home/category', {
-                        posts: posts, 
-                        category: category,
-                        categories: categories,
-                        current: parseInt(page),
-                        pages: Math.ceil(postCount / perPage)
-                    });    
-                });
-            });
-        });    
-    })        
+    try {
+        const category = await Category.findOne({_id: req.params.id});
+        const posts = await Post.find({category: category})
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+            .populate('user')
+            .populate('category');
+        const postCount = await Post.count();
+        const categories = await Category.find({});
+
+        await Promise.all(
+            posts.map(async post => {
+                if (!post.file) {
+                    return console.log(`No file found for post ${post._id}`);
+                }
+                const params = {
+                    Bucket: process.env.S3_BUCKET_NAME,
+                    Key: post.file
+                };
+                try {
+                    const file = await s3.getObject(params).promise();
+                    post.imgUrl = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+                } catch (err) {
+                    console.log(err);
+                    post.imgUrl = null;
+                }
+            })
+        )
+
+        res.render('home/category', {
+            posts: posts,
+            category: category,
+            categories: categories,
+            current: parseInt(page),
+            pages: Math.ceil(postCount / perPage)
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
 });
 
 
