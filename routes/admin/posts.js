@@ -23,8 +23,9 @@ router.all('/*', adminAuthenticated, (req, res, next)=> {
 
 router.get('/', async (req, res) => {
     const posts = await Post.find({})
-        .populate('category')
-        .populate('user');
+    .sort({ date: -1 })
+    .populate('category')
+    .populate('user');
 
     // const categories = await Category.find({});
 
