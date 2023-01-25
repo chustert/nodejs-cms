@@ -101,6 +101,34 @@ router.all('/*', (req, res, next)=> {
 // });
 
 router.get('/', async (req, res) => {
+    let featuredPost;
+    try {
+        featuredPost = await Post.findOne({ featured: true })
+        .sort({ date: -1 })
+        .populate('category')
+        .populate('user');
+    
+        if (!featuredPost.file) {
+            return console.log(`No file found for featured post ${featuredPost._id}`);
+        }
+    
+        const params = {
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: featuredPost.file
+        };
+    
+        try {
+            const file = await s3.getObject(params).promise();
+            featuredPost.imgUrl = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+        } catch (err) {
+            console.log(err);
+            featuredPost.imgUrl = null;
+        }
+    } catch (err) {
+        console.log(err);
+    }
+    
+
     const perPage = 10;
     const page = req.query.page || 1;
     const posts = await Post.find({})
@@ -153,6 +181,7 @@ router.get('/', async (req, res) => {
 
     res.render('home/index', { 
         posts: posts, 
+        featuredPost: featuredPost,
         categories: categories,
         current: parseInt(page),
         pages: Math.ceil(postCount / perPage),  

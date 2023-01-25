@@ -8,6 +8,26 @@
         {{!-- <small>Secondary Text</small> --}}
       </h1>
 
+      {{#if featuredPost}}
+        <h2>Featured Post</h2>
+        
+        <div class="card mb-4">
+          {{#if featuredPost.imgUrl}}
+            <img class="card-img-top" src="{{featuredPost.imgUrl}}" alt="{{featuredPost.title}}">
+          {{/if}}
+          <div class="card-body">
+            <h2 class="card-title">{{featuredPost.title}}</h2>
+            <p class="card-text">{{featuredPost.body}}</p>
+            <a href="/post/{{featuredPost.slug}}" class="btn btn-primary">Read More &rarr;</a>
+          </div>
+          <div class="card-footer text-muted">
+            Posted on {{generateDate featuredPost.date 'MMMM Do YYYY'}} by <a href="/account/profile/{{featuredPost.user._id}}">{{featuredPost.user.firstName}}</a> in <a href="/category/{{featuredPost.category._id}}">{{featuredPost.category.name}}</a>
+          </div>
+        </div>
+      {{/if}}
+
+      <h2>All Posts</h2>
+
       {{#each posts}}
         <!-- Blog Post -->
         <div class="card mb-4">

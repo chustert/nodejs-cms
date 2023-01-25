@@ -23,6 +23,10 @@ const PostSchema = new Schema({
         type: Boolean,
         required: true
     },
+    featured: {
+        type: Boolean,
+        default: false
+    },
     body: {
         type: String,
         required: true,

@@ -27,8 +27,6 @@ router.get('/', async (req, res) => {
     .populate('category')
     .populate('user');
 
-    // const categories = await Category.find({});
-
     await Promise.all(
         posts.map(async post => {
             if (!post.file) {
@@ -48,16 +46,9 @@ router.get('/', async (req, res) => {
         })
     );
     
-    res.render('admin/posts', { 
-        posts: posts, 
+    res.render('admin/posts', {
+        posts: posts
     });
-
-    // Post.find()
-    // .populate('category')
-    // .populate('user')
-    // .then(posts => {
-    //     res.render('admin/posts', {posts: posts});
-    // }); 
 });
 
 router.get('/edit/:id', (req, res) => {
@@ -122,6 +113,13 @@ router.delete('/:id', (req, res) => {
             });
         }); 
     });
+});
+
+router.post('/featured', (req, res) => {
+    Post.findByIdAndUpdate(req.body.id, {$set: {featured: req.body.featured}}, (err, result) => {
+        if(err) return err;
+        res.send(result);
+    })
 });
 
 module.exports = router;

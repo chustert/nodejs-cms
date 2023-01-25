@@ -98,3 +98,22 @@
             })
         });
     </script>
+
+    <script>
+        $("[name='featured']").bootstrapSwitch();
+
+        $(document).ready(() => {
+            $("[name='featured']").on('switchChange.bootstrapSwitch', function(e, data) {
+              const id = $(this).attr('data-id');
+              $.ajax({
+                  type: "POST",
+                  url: '/admin/posts/featured',
+                  data: {id: id, featured: data},
+                  cache: false,
+                  success: function(data) {
+                    toastr.success(`Post with id ${data._id} was updated.`);
+                  }
+              })
+            })
+        });
+    </script>

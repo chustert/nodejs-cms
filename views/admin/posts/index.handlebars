@@ -10,6 +10,7 @@
             <th>Status</th>
             <th>Category</th>
             <th>Allow Comments</th>
+            <th>Featured</th>
             <th>Date</th>
             <th>View Post</th>
             <th>Edit Post</th>
@@ -33,6 +34,7 @@
                 <td>{{status}}</td>
                 <td>{{category.name}}</td>
                 <td>{{allowComments}}</td>
+                <td><input data-id="{{id}}" type="checkbox" {{#if featured}} checked {{/if}} name="featured"></td>
                 <td>{{generateDate date 'MMMM Do YYYY'}}</td>
                 <td><a href="/post/{{slug}}">View</a></td>
                 <td><a href="/admin/posts/edit/{{id}}">Edit</a></td>
