@@ -23,7 +23,12 @@
             <tr>
                 <td>{{id}}</td>
                 <td>{{user.firstName}}</td>
-                <td><img height="50px" src="/uploads/{{file}}" alt=""></td>
+                {{!-- <td><img height="50px" src="/uploads/{{file}}" alt=""></td> --}}
+                <td>
+                        {{#if imgUrl}}
+                            <img class="card-img-top" src="{{imgUrl}}" alt="{{title}}">
+                        {{/if}}
+                    </td>
                 <td>{{title}}</td>
                 <td>{{status}}</td>
                 <td>{{category.name}}</td>

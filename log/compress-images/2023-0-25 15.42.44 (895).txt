@@ -1,0 +1,7 @@
+File from: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/1674614564878-marek-piwnicki-ixsnisnu7fo-unsplash.jpeg]
+
+File to: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/optimized/1674614564878-marek-piwnicki-ixsnisnu7fo-unsplash.jpeg]
+
+Compression algorithm: [-]
+
+Description: File does not exist!

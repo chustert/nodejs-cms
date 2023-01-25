@@ -5,19 +5,58 @@ const Category = require('../../models/Category');
 const User = require('../../models/User');
 const {isEmpty, uploadDir} = require('../../helpers/upload-helper');
 const fs = require('fs');
+const AWS = require('aws-sdk');
 //const path = require('path');
 const { userAuthenticated } = require('../../helpers/authentication');
 const { adminAuthenticated } = require('../../helpers/admin-authentication');
+
+const s3 = new AWS.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    endpoint: new AWS.Endpoint('s3-ap-southeast-2.amazonaws.com') 
+});
 
 router.all('/*', adminAuthenticated, (req, res, next)=> {
     req.app.locals.layout = 'admin';
     next();
 }); 
 
-router.get('/', (req, res) => {
-    Post.find().populate('category').populate('user').then(posts => {
-        res.render('admin/posts', {posts: posts});
-    }); 
+router.get('/', async (req, res) => {
+    const posts = await Post.find({})
+        .populate('category')
+        .populate('user');
+
+    // const categories = await Category.find({});
+
+    await Promise.all(
+        posts.map(async post => {
+            if (!post.file) {
+                return console.log(`No file found for post ${post._id}`);
+            }
+            const params = {
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: post.file
+            };
+            try {
+                const file = await s3.getObject(params).promise();
+                post.imgUrl = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+            } catch (err) {
+                console.log(err);
+                post.imgUrl = null;
+            }
+        })
+    );
+    
+    res.render('admin/posts', { 
+        posts: posts, 
+    });
+
+    // Post.find()
+    // .populate('category')
+    // .populate('user')
+    // .then(posts => {
+    //     res.render('admin/posts', {posts: posts});
+    // }); 
 });
 
 router.get('/edit/:id', (req, res) => {

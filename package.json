@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@handlebars/allow-prototype-access": "^1.0.5",
+    "aws-sdk": "^2.1295.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
     "connect-flash": "^0.1.1",
@@ -20,6 +21,7 @@
     "express-handlebars": "^3.1.0",
     "express-session": "^1.17.3",
     "faker": "^5.5.3",
+    "gifsicle": "^5.2.1",
     "handlebars": "^4.7.7",
     "method-override": "^3.0.0",
     "moment": "^2.29.4",
@@ -28,6 +30,10 @@
     "nodemailer": "^6.8.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "passport-remember-me": "^0.0.1"
+    "passport-remember-me": "^0.0.1",
+    "pngquant-bin": "^6.0.1"
+  },
+  "devDependencies": {
+    "compress-images": "^2.0.5"
   }
 }

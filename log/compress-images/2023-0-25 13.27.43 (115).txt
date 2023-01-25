@@ -1,0 +1,7 @@
+File from: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/1674606463106-10-Must-Have-Features-for-Your-Hotel-Website.jpeg]
+
+File to: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/optimized/1674606463106-10-Must-Have-Features-for-Your-Hotel-Website.jpeg]
+
+Compression algorithm: [-]
+
+Description: File does not exist!

@@ -1,0 +1,7 @@
+File from: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/1674607073621-desktop-wallpaper-games-backgrounds-group-video-games-background.jpeg]
+
+File to: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/optimized/1674607073621-desktop-wallpaper-games-backgrounds-group-video-games-background.jpeg]
+
+Compression algorithm: [-]
+
+Description: File does not exist!

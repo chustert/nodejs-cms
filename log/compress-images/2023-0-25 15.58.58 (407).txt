@@ -1,0 +1,7 @@
+File from: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/1674615538397-yannis-bontempi-adiQf0HUkRU-unsplash.jpeg]
+
+File to: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/optimized/1674615538397-yannis-bontempi-adiQf0HUkRU-unsplash.jpeg]
+
+Compression algorithm: [-]
+
+Description: File does not exist!

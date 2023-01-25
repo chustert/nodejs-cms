@@ -11,6 +11,7 @@ const passport = require('passport');
 const { disconnect } = require('mongoose');
 const {isEmpty, uploadDir} = require('../../helpers/upload-helper');
 const fs = require('fs');
+const AWS = require('aws-sdk');
 const LocalStrategy = require('passport-local').Strategy;
 const {userAuthenticated} = require('../../helpers/authentication');
 const Token = require('../../models/Token');
@@ -18,6 +19,10 @@ const sendEmail = require("../../helpers/email/sendEmail");
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 const qs = require('qs');
+const path = require('path');
+const compress_images = require('compress-images');
+const pngquant = require('pngquant-bin');
+const gifsicle = require('gifsicle');
 
 let clientURL = '';
 // let protocol = '';
@@ -30,6 +35,12 @@ if(process.env.NODE_ENV === 'production') {
     // protocol = "http://";
 }
 
+const s3 = new AWS.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    endpoint: new AWS.Endpoint('s3-ap-southeast-2.amazonaws.com') 
+});
+
 // const clientURL = process.env.BASE_URL || process.env.CLIENT_URL_DEV;
 
 router.all('/*', (req, res, next)=> {
@@ -40,42 +51,175 @@ router.all('/*', (req, res, next)=> {
 
 
 //************ HOME ************//
-router.get('/', (req, res)=> {
+// router.get('/', (req, res)=> {
+//     const perPage = 10;
+//     const page = req.query.page || 1;
+//     Post.find({})
+//         .skip((perPage * page) - perPage)
+//         .limit(perPage)
+//         .populate('user')
+//         .populate('category')
+//         .then(posts => {
+            
+            
+
+//             Post.count().then(postCount => {
+//                 Category.find({}).then(categories=> {
+
+
+//                     const imgUrls = [];
+
+
+//                     for (let i = 0; i < posts.length; i++) {
+
+//                         const params = {
+//                             Bucket: process.env.S3_BUCKET_NAME,
+//                             Key: posts[i].file
+//                         };
+        
+//                         s3.getObject(params, (err, file) => {
+//                             if (err) {
+//                                 return console.log(err);        
+//                             }
+//                             let dataSrc = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+//                             imgUrls.push(dataSrc);
+//                         });        
+                        
+//                     }
+//                     console.log(imgUrls);
+
+
+//                             res.render('home/index', { 
+//                                 posts: posts, 
+//                                 categories: categories,
+//                                 current: parseInt(page),
+//                                 pages: Math.ceil(postCount / perPage),  
+//                             });
+//                 });
+//             });
+//         });            
+// });
+
+router.get('/', async (req, res) => {
     const perPage = 10;
     const page = req.query.page || 1;
-
-    Post.find({})
+    const posts = await Post.find({})
         .skip((perPage * page) - perPage)
         .limit(perPage)
         .populate('user')
-        .populate('category')
-        .then(posts => {
-            Post.count().then(postCount => {
-                Category.find({}).then(categories=> {
-                    res.render('home/index', {
-                        posts: posts, 
-                        categories: categories,
-                        current: parseInt(page),
-                        pages: Math.ceil(postCount / perPage)
-                    });    
-                });
-            });
-        });            
+        .populate('category');
+
+    const postCount = await Post.count();
+    const categories = await Category.find({});
+
+    await Promise.all(
+        posts.map(async post => {
+            if (!post.file) {
+                return console.log(`No file found for post ${post._id}`);
+            }
+            const params = {
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: post.file
+            };
+            try {
+                const file = await s3.getObject(params).promise();
+                post.imgUrl = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+            } catch (err) {
+                console.log(err);
+                post.imgUrl = null;
+            }
+        })
+    );
+
+    // Could also use a for of loop, but it's not as efficient
+    // for (const post of posts) {
+    //     if (!post.file) {
+    //         console.log(`No file found for post ${post._id}`);
+    //         continue;
+    //     }
+    //     const params = {
+    //         Bucket: process.env.S3_BUCKET_NAME,
+    //         Key: post.file
+    //     };
+    //     try {
+    //         const file = await s3.getObject(params).promise();
+    //         post.imgUrl = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+    //     } catch (err) {
+    //         console.log(err);
+    //         post.imgUrl = null;
+    //     }
+    // }
+
+    res.render('home/index', { 
+        posts: posts, 
+        categories: categories,
+        current: parseInt(page),
+        pages: Math.ceil(postCount / perPage),  
+    });
 });
 
 
 
+
 //************ SINGLE POST ************//
-router.get('/post/:slug', (req, res) => {
-    Post.findOne({slug: req.params.slug})
+// router.get('/post/:slug', (req, res) => {
+//     Post.findOne({slug: req.params.slug})
+//     .populate({path: 'comments', match: {approveComment: true}, populate: {path: 'user', model: 'users'}})
+//     .populate('user')
+//     .then(post => {
+//         Category.find({}).then(categories => {
+
+//             if (!post.file) {
+//                 console.log("No file found for post " + post._id);
+//                 res.render('home/post', { post: post, categories: categories, imgUrl: null });
+//                 return;
+//             }
+
+//             AWS.config.update({
+//                 region: 'ap-southeast-2'
+//              });
+
+//             const params = {
+//                 Bucket: process.env.S3_BUCKET_NAME,
+//                 Key: post.file
+//             };
+
+//             s3.getObject(params, (err, file) => {
+//                 if (err) {
+//                     return console.log(err);        
+//                 }
+//                 var dataSrc = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+//                 res.render('home/post', { post: post, categories: categories, imgUrl: dataSrc });
+//             });
+
+//         });
+//     }); 
+// });
+router.get('/post/:slug', async (req, res) => {
+    const post = await Post.findOne({slug: req.params.slug})
     .populate({path: 'comments', match: {approveComment: true}, populate: {path: 'user', model: 'users'}})
-    .populate('user')
-    .then(post => {
-        Category.find({}).then(categories => {
-            res.render('home/post', {post: post, categories: categories});
-        });
-        
-    }); 
+    .populate('user');
+
+    const categories = await Category.find({});
+
+    AWS.config.update({
+        region: 'ap-southeast-2'
+     });
+
+    const params = {
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: post.file
+    };
+
+    try {
+        const file = await s3.getObject(params).promise();
+        var dataSrc = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+        res.render('home/post', { post: post, categories: categories, imgUrl: dataSrc });
+    } catch (err) {
+        console.log(`Error: ${err}`);
+        res.render('home/post', { post: post, categories: categories, imgUrl: null });
+    }
+
 });
 
 
@@ -228,12 +372,42 @@ router.put('/my-account/profile/password', userAuthenticated, (req, res) => {
     }
 });
 
-router.get('/my-account/posts', userAuthenticated, (req, res)=> {
-    Post.find({user: req.user.id})
-    .populate('category')
-    .then(posts => {
-        res.render('home/my-account/posts', {posts: posts});
-    }); 
+router.get('/my-account/posts', userAuthenticated, async (req, res)=> {
+    const posts = await Post.find({})
+        .populate('category');
+
+    // const categories = await Category.find({});
+
+    await Promise.all(
+        posts.map(async post => {
+            if (!post.file) {
+                return console.log(`No file found for post ${post._id}`);
+            }
+            const params = {
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: post.file
+            };
+            try {
+                const file = await s3.getObject(params).promise();
+                post.imgUrl = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+            } catch (err) {
+                console.log(err);
+                post.imgUrl = null;
+            }
+        })
+    );
+    
+    res.render('home/my-account/posts', { 
+        posts: posts, 
+    });
+    
+    
+    
+    // Post.find({user: req.user.id})
+    // .populate('category')
+    // .then(posts => {
+    //     res.render('home/my-account/posts', {posts: posts});
+    // }); 
 });
 
 router.get('/my-account/posts/create', userAuthenticated, (req, res) => {
@@ -242,7 +416,7 @@ router.get('/my-account/posts/create', userAuthenticated, (req, res) => {
     })
 });
 
-router.post('/my-account/posts/create', userAuthenticated, (req, res) => {
+router.post('/my-account/posts/create', userAuthenticated, async (req, res) => {
     let errors = [];
 
     if(!req.body.title) {
@@ -257,19 +431,79 @@ router.post('/my-account/posts/create', userAuthenticated, (req, res) => {
             errors: errors
         })
     } else {
-        let filename = '1661485874214-66412784_2389658641291513_5607738796563291225_n.jpg';
+        let fileName = '';
 
-        if(req.files != null) {
-            let file = req.files.file;
-            filename = Date.now() + '-' + file.name; 
-        
-            const uploadPath = __dirname + "/../../public/uploads/";
-            file.mv(uploadPath + filename, (err) => {
-                 if(err) {
-                    console.log(`There was an error: ${err}`) 
-                 }
-            });
+        async function uploadFile() {
+            
+            if(req.files != null) {
+                let file = req.files.file;
+                fileName = Date.now() + '-' + file.name; 
+
+                const uploadPath = path.join(__dirname, "..", "..", "public", "uploads");
+
+
+
+                await file.mv(uploadPath + '/' + fileName, (err) => {
+                    if(err) {
+                        console.log(`There was an error: ${err}`) 
+                    }
+                });
+
+
+
+
+                // INPUT_path = uploadPath + "/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}";
+                INPUT_path = uploadPath + '/' + fileName;
+                OUTPUT_path = uploadPath + '/optimized/';
+
+                const optimizedImage = await compress_images(INPUT_path, OUTPUT_path, { compress_force: false, statistic: true, autoupdate: true }, false,
+                                { jpg: { engine: "mozjpeg", command: ["-quality", "60"] } },
+                                { png: { engine: "pngquant", command: ["--quality=20-50", "-o"] } },
+                                { svg: { engine: "svgo", command: "--multipass" } },
+                                { gif: { engine: "gifsicle", command: ["--colors", "64", "--use-col=web"] } },
+                                async function (error, completed, statistic) {
+                                    console.log("-------------");
+                                    console.log(`ERROR: ${error}`);
+                                    console.log(`COMPLETED: ${completed}`);
+                                    console.log(`STATISTIC: ${statistic}`);
+                                    console.log("-------------");
+
+                                    try {
+                                        const fileContent = await fs.promises.readFile(path.join(uploadPath + '/optimized', fileName));
+                    
+                                        const s3 = new AWS.S3({
+                                            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                                            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+                                        });
+                    
+                                        // Setting up S3 upload parameters
+                                        const params = {
+                                            Bucket: process.env.S3_BUCKET_NAME,
+                                            Key: fileName, // File name you want to save as in S3
+                                            Body: fileContent
+                                        };
+                    
+                                        try {
+                                            await s3.upload(params).promise();
+                                            console.log(`File uploaded successfully. ${params.Key}`);
+                                            await fs.promises.unlink(path.join(uploadPath, fileName));
+                                            await fs.promises.unlink(path.join(uploadPath + '/optimized/', fileName));
+                                        } catch (err) {
+                                            console.log(`There was an error: ${err}`);
+                                        }
+                                    } catch(err) {
+                                        console.log(err);
+                                    }
+                                }
+                );
+
+
+
+                
+            }
         }
+
+        await uploadFile();
 
         let allowComments = true;
         
@@ -286,7 +520,7 @@ router.post('/my-account/posts/create', userAuthenticated, (req, res) => {
                 status: req.body.status,
                 allowComments: allowComments,
                 body: req.body.body,
-                file: filename,
+                file: fileName,
                 category: req.body.category
             });
             loggedUser.posts.push(newPost);
@@ -302,30 +536,110 @@ router.post('/my-account/posts/create', userAuthenticated, (req, res) => {
     }
 });
 
-router.get('/my-account/posts/edit/:id', userAuthenticated, (req, res) => {
-    Post.findOne({_id: req.params.id}).then(post => {
-        Category.find({}).then(categories => {
-            console.log(post.user.toString());
-            console.log(req.user.id);
-            if (post.user.toString() === req.user.id) {
-                res.render('home/my-account/posts/edit', {post: post, categories: categories})
-            } else {
-                res.status(401).json({
-                    msg: "You cannot edit someone else's post.",
-                });
-            }
+router.get('/my-account/posts/edit/:id', userAuthenticated, async (req, res) => {
+    const post = await Post.findOne({_id: req.params.id})
+    
+    const categories = await Category.find({});
+
+    AWS.config.update({
+        region: 'ap-southeast-2'
+     });
+
+    const params = {
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: post.file
+    };
+
+
+    if (post.user.toString() === req.user.id) {
+        try {
+            const file = await s3.getObject(params).promise();
+            var dataSrc = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+            res.render('home/my-account/posts/edit', { post: post, categories: categories, imgUrl: dataSrc });
+        } catch (err) {
+            console.log(`Error: ${err}`);
+            res.render('home/my-account/posts/edit', { post: post, categories: categories, imgUrl: null });
+        }
+        // res.render('home/my-account/posts/edit', {post: post, categories: categories})
+    } else {
+        res.status(401).json({
+            msg: "You cannot edit someone else's post.",
         });
-    }); 
+    }
 });
 
-router.put('/my-account/posts/edit/:id', (req, res) => {
-    Post.findOne({_id: req.params.id}).then(post => {
-        if(req.body.allowComments) {
-            allowComments = true;
-        } else {
-            allowComments = false;
+router.put('/my-account/posts/edit/:id', async (req, res) => {
+
+        let fileName = '';
+
+        async function uploadFile() {
+        
+            if(req.files != null) {
+                let file = req.files.file;
+                fileName = Date.now() + '-' + file.name; 
+
+                const uploadPath = path.join(__dirname, "..", "..", "public", "uploads");
+
+                await file.mv(uploadPath + '/' + fileName, (err) => {
+                    if(err) {
+                        console.log(`There was an error: ${err}`) 
+                    }
+                });
+
+                // INPUT_path = uploadPath + "/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}";
+                INPUT_path = uploadPath + '/' + fileName;
+                OUTPUT_path = uploadPath + '/optimized/';
+
+                const optimizedImage = await compress_images(INPUT_path, OUTPUT_path, { compress_force: false, statistic: true, autoupdate: true }, false,
+                                { jpg: { engine: "mozjpeg", command: ["-quality", "60"] } },
+                                { png: { engine: "pngquant", command: ["--quality=20-50", "-o"] } },
+                                { svg: { engine: "svgo", command: "--multipass" } },
+                                { gif: { engine: "gifsicle", command: ["--colors", "64", "--use-col=web"] } },
+                                async function (error, completed, statistic) {
+                                    console.log("-------------");
+                                    console.log(`ERROR: ${error}`);
+                                    console.log(`COMPLETED: ${completed}`);
+                                    console.log(`STATISTIC: ${statistic}`);
+                                    console.log("-------------");
+
+                                    try {
+                                        const fileContent = await fs.promises.readFile(path.join(uploadPath + '/optimized', fileName));
+                    
+                                        const s3 = new AWS.S3({
+                                            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                                            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+                                        });
+                    
+                                        // Setting up S3 upload parameters
+                                        const params = {
+                                            Bucket: process.env.S3_BUCKET_NAME,
+                                            Key: fileName, // File name you want to save as in S3
+                                            Body: fileContent
+                                        };
+                    
+                                        try {
+                                            await s3.upload(params).promise();
+                                            console.log(`File uploaded successfully. ${params.Key}`);
+                                            await fs.promises.unlink(path.join(uploadPath, fileName));
+                                            await fs.promises.unlink(path.join(uploadPath + '/optimized/', fileName));
+                                        } catch (err) {
+                                            console.log(`There was an error: ${err}`);
+                                        }
+                                    } catch(err) {
+                                        console.log(err);
+                                    }
+                                }
+                );
+
+            }
         }
 
+        await uploadFile();
+
+        const post = await Post.findOne({_id: req.params.id});
+
+        let allowComments = req.body.allowComments ? true : false;
+    
         post.user = req.user.id;
         post.title = req.body.title;
         post.status = req.body.status;
@@ -333,45 +647,105 @@ router.put('/my-account/posts/edit/:id', (req, res) => {
         post.body = req.body.body;
         post.category = req.body.category;
 
-        if(req.files != null) {
-            let file = req.files.file;
-            filename = Date.now() + '-' + file.name; 
-            post.file = filename;
-        
-            const uploadPath = __dirname + "/../../public/uploads/";
-            file.mv(uploadPath + filename, (err) => {
-                 if(err) {
-                    console.log(`There was an error: ${err}`) 
-                 }
-            });
+        if (fileName) {
+            async function deleteFile() {
+                AWS.config.update({
+                    region: 'ap-southeast-2'
+                });
+                const s3 = new AWS.S3();
+                
+                const params = {
+                    Bucket: process.env.S3_BUCKET_NAME,
+                    Key: post.file
+                }
+                try {
+                    await s3.headObject(params).promise()
+                    console.log("File Found in S3")
+                    try {
+                        await s3.deleteObject(params).promise()
+                        console.log("file deleted Successfully")
+                    }
+                    catch (err) {
+                        console.log("ERROR in file Deleting : " + JSON.stringify(err))
+                    }
+                } catch (err) {
+                        console.log("File not Found ERROR : " + err.code)
+                }
+            }
+            
+            await deleteFile();
+
+            post.file = fileName;
+        } else {
+            post.file = post.file;
         }
 
-        post.save().then(updatedPost => {
+        const updatedPost = await post.save();
+            
+        req.flash('success_message', `Post ${updatedPost.title} was successfully updated`);
+        res.redirect('/my-account/posts');
 
-            req.flash('success_message', `Post ${updatedPost.title} was successfully updated`);
-            res.redirect('/my-account/posts');
-        }).catch(error => {
-            console.log("could not save post");
-        });
-    }); 
 });
 
-router.delete('/my-account/posts/:id', (req, res) => {
-    Post.findOne({_id: req.params.id})
-    .populate('comments')
-    .then(post => {
-        fs.unlink(uploadDir + post.file, (err)=> {
-            if(!post.comments.length < 1) {
-                post.comments.forEach(comment => {
-                    comment.remove();
-                })
+router.delete('/my-account/posts/:id', async (req, res) => {
+        const post = await Post.findOne({_id: req.params.id})
+        .populate('comments');
+
+        console.log(`Post file name: ${post.file}`);
+
+        // try {
+        //     AWS.config.update({
+        //         region: 'ap-southeast-2'
+        //     });
+
+        //     const params = {
+        //         Bucket: process.env.S3_BUCKET_NAME,
+        //         Key: post.file
+        //     };
+
+        //     const data = await s3.deleteObject(params).promise();
+        //     console.log(`The file ${post.file} was successfully deleted from the S3 bucket ${process.env.S3_BUCKET_NAME}`);
+        // } catch (err) {
+        //     if (err.code === 'NoSuchKey') {
+        //         console.log(`Error: The file ${post.file} was not found in the S3 bucket ${process.env.S3_BUCKET_NAME}`);
+        //     } else {
+        //         console.log(err, err.stack);
+        //     }
+        // }
+
+        AWS.config.update({
+            region: 'ap-southeast-2'
+        });
+        const s3 = new AWS.S3();
+        
+        const params = {
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: post.file
+        }
+        try {
+            await s3.headObject(params).promise()
+            console.log("File Found in S3")
+            try {
+                await s3.deleteObject(params).promise()
+                console.log("file deleted Successfully")
             }
-            post.remove().then(postRemoved => {
-                req.flash('success_message', `Post "${post.title}" was successfully deleted`);
-                res.redirect('/my-account/posts');
-            });
-        }); 
-    });
+            catch (err) {
+                console.log("ERROR in file Deleting : " + JSON.stringify(err))
+            }
+        } catch (err) {
+                console.log("File not Found ERROR : " + err.code)
+        }
+        
+        // Remove post and comments from the database
+        if (!post.comments.length < 1) {
+            post.comments.forEach(comment => {
+                comment.remove();
+            })
+        }
+        await post.remove();
+        req.flash('success_message', `Post "${post.title}" was successfully deleted`);
+        res.redirect('/my-account/posts');
+
 });
 
 router.get('/my-account/comments', userAuthenticated, (req, res)=> {

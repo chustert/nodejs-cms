@@ -1,0 +1,16 @@
+File from: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/1673910604642-desktop-wallpaper-games-backgrounds-group-video-games-background.jpeg]
+
+File to: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/optimized1673910604642-desktop-wallpaper-games-backgrounds-group-video-games-background.jpeg]
+
+Compression algorithm: [mozjpeg]
+
+Description: Error: Command failed: /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/node_modules/mozjpeg/vendor/cjpeg -quality 60 -outfile /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/optimized1673910604642-desktop-wallpaper-games-backgrounds-group-video-games-background.jpeg /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/1673910604642-desktop-wallpaper-games-backgrounds-group-video-games-background.jpeg
+Empty input file
+File from: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/1673917777500-jakub-dziubak-XtUd5SiX464-unsplash.jpeg]
+
+File to: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/optimized1673917777500-jakub-dziubak-XtUd5SiX464-unsplash.jpeg]
+
+Compression algorithm: [mozjpeg]
+
+Description: Error: Command failed: /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/node_modules/mozjpeg/vendor/cjpeg -quality 60 -outfile /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/optimized1673917777500-jakub-dziubak-XtUd5SiX464-unsplash.jpeg /Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/1673917777500-jakub-dziubak-XtUd5SiX464-unsplash.jpeg
+Empty input file

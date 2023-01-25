@@ -1,0 +1,7 @@
+File from: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/1674614145017-martin-schmidli-mGy1Jjr2e6M-unsplash.jpeg]
+
+File to: [/Users/christianhustert/Desktop/NodeJS-CMS/nodejs-cms/public/uploads/optimized/1674614145017-martin-schmidli-mGy1Jjr2e6M-unsplash.jpeg]
+
+Compression algorithm: [-]
+
+Description: File does not exist!
