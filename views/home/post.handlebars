@@ -17,7 +17,7 @@
           <hr>
 
           <!-- Date/Time -->
-          <p>Posted on {{generateDate date 'MMMM Do YYYY'}}</p>
+          <p>Posted on {{generateDate date 'MMMM Do YYYY'}} | {{post.comments.length}} Comments | {{post.likes}} Likes</p>
 
           <hr>
 
@@ -32,6 +32,12 @@
           <hr>
 
           {{#if user}}
+
+            <input data-slug="{{post.slug}}" type="checkbox" {{#if postLikes.length}} checked {{/if}} name="likes">
+            
+            <hr>
+
+          
 
             {{#if post.allowComments}}
 
@@ -59,7 +65,7 @@
 
             {{else}}
 
-            <h3>You need to <a href="/login">login</a> to comment.</h3>
+            <h3>You need to <a href="/login">login</a> to comment and like.</h3>
 
           {{/if}}
 

@@ -4,6 +4,7 @@ const Post = require('../../models/Post');
 const Category = require('../../models/Category');
 const Comment = require('../../models/Comment');
 const Message = require('../../models/Message');
+const PostLikes = require('../../models/PostLikes');
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs')
 const crypto = require("crypto");
@@ -236,6 +237,12 @@ router.get('/post/:slug', async (req, res) => {
     .populate({path: 'comments', match: {approveComment: true}, populate: {path: 'user', model: 'users'}})
     .populate('user');
 
+    let postLikes = [];
+    if (req.user) {
+      // Query the postLikes collection to find the likes associated with the current user and post
+      postLikes = await PostLikes.find({user: req.user.id, post: post._id});
+    }
+
     const categories = await Category.find({});
 
     AWS.config.update({
@@ -250,13 +257,45 @@ router.get('/post/:slug', async (req, res) => {
     try {
         const file = await s3.getObject(params).promise();
         var dataSrc = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
-        res.render('home/post', { post: post, categories: categories, imgUrl: dataSrc });
+        res.render('home/post', { post: post, categories: categories, imgUrl: dataSrc, postLikes: postLikes });
     } catch (err) {
         console.log(`Error: ${err}`);
-        res.render('home/post', { post: post, categories: categories, imgUrl: null });
+        res.render('home/post', { post: post, categories: categories, imgUrl: null, postLikes: postLikes });
     }
 
 });
+
+router.put('/post/:slug/like', userAuthenticated, async (req, res) => {
+    try {
+        const post = await Post.findOne({slug: req.params.slug});
+        const postId = post._id;
+        const user = await User.findOne({_id: req.user.id})
+
+        const existingLike = await PostLikes.findOne({ user: user._id, post: post._id });
+
+        console.log(`Existing Like: ${existingLike}`);
+
+        if (existingLike) {
+            await existingLike.remove();
+            await Post.findOneAndUpdate({_id: postId}, { $inc: { likes: -1 } });
+            await User.findOneAndUpdate({_id: user._id}, { $pull: { likes: existingLike._id } });
+            res.json({ message: "Like removed" });
+        } else {
+            const newPostLike = new PostLikes({ 
+                user: user._id, 
+                post: post._id 
+            });
+            
+            await newPostLike.save();
+            await User.findOneAndUpdate({_id: user._id}, { $push: { likes: newPostLike._id } });
+            await Post.findOneAndUpdate({_id: postId}, {$inc: {likes: 1}});
+            res.json({ success: true });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false });
+    }
+})
 
 
 //************ CATEGORIES ************//

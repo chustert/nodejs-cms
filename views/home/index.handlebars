@@ -21,7 +21,7 @@
             <a href="/post/{{featuredPost.slug}}" class="btn btn-primary">Read More &rarr;</a>
           </div>
           <div class="card-footer text-muted">
-            Posted on {{generateDate featuredPost.date 'MMMM Do YYYY'}} by <a href="/account/profile/{{featuredPost.user._id}}">{{featuredPost.user.firstName}}</a> in <a href="/category/{{featuredPost.category._id}}">{{featuredPost.category.name}}</a> | {{featuredPost.comments.length}} Comments
+            Posted on {{generateDate featuredPost.date 'MMMM Do YYYY'}} by <a href="/account/profile/{{featuredPost.user._id}}">{{featuredPost.user.firstName}}</a> in <a href="/category/{{featuredPost.category._id}}">{{featuredPost.category.name}}</a> | {{featuredPost.comments.length}} Comments | {{featuredPost.likes}} Likes
           </div>
         </div>
       {{/if}}
@@ -40,7 +40,7 @@
             <a href="/post/{{slug}}" class="btn btn-primary">Read More &rarr;</a>
           </div>
           <div class="card-footer text-muted">
-            Posted on {{generateDate date 'MMMM Do YYYY'}} by <a href="/account/profile/{{user._id}}">{{user.firstName}}</a> in <a href="/category/{{category._id}}">{{category.name}}</a> | {{comments.length}} Comments
+            Posted on {{generateDate date 'MMMM Do YYYY'}} by <a href="/account/profile/{{user._id}}">{{user.firstName}}</a> in <a href="/category/{{category._id}}">{{category.name}}</a> | {{comments.length}} Comments | {{likes}} Likes
           </div>
         </div>
       {{/each}}
@@ -72,7 +72,7 @@
             <a href="/post/{{slug}}" class="btn btn-primary">Read More &rarr;</a>
           </div>
           <div class="card-footer text-muted">
-            Posted on {{generateDate date 'MMMM Do YYYY'}} by <a href="/account/profile/{{user._id}}">{{user.firstName}}</a> in <a href="/category/{{category._id}}">{{category.name}}</a>  | {{comments.length}} Comments
+            Posted on {{generateDate date 'MMMM Do YYYY'}} by <a href="/account/profile/{{user._id}}">{{user.firstName}}</a> in <a href="/category/{{category._id}}">{{category.name}}</a> | {{comments.length}} Comments | {{likes}} Likes
           </div>
         </div>
       {{/each}}

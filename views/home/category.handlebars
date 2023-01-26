@@ -21,7 +21,7 @@
             <a href="/post/{{slug}}" class="btn btn-primary">Read More &rarr;</a>
           </div>
           <div class="card-footer text-muted">
-            Posted on {{generateDate date 'MMMM Do YYYY'}} by <a href="/account/profile/{{user._id}}">{{user.firstName}}</a> in <a href="/category/{{category._id}}">{{category.name}}</a>
+            Posted on {{generateDate date 'MMMM Do YYYY'}} by <a href="/account/profile/{{user._id}}">{{user.firstName}}</a> in <a href="/category/{{category._id}}">{{category.name}}</a> | {{comments.length}} Comments
           </div>
         </div>
       {{/each}}

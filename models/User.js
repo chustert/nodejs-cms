@@ -39,6 +39,10 @@ const UserSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'posts'
     }],
+    likes: [{
+        type: Schema.Types.ObjectId,
+        ref: 'postLikes'
+    }],
     comments: [{
         type: Schema.Types.ObjectId,
         ref: 'comments'
