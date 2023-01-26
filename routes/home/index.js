@@ -127,7 +127,31 @@ router.get('/', async (req, res) => {
     } catch (err) {
         console.log(err);
     }
-    
+
+    const postsPopular = await Post.find({})
+    .sort({ comments: -1 })
+    .limit(3)
+    .populate('user')
+    .populate('category');
+
+    await Promise.all(
+        postsPopular.map(async post => {
+            if (!post.file) {
+                return console.log(`No file found for post ${post._id}`);
+            }
+            const params = {
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: post.file
+            };
+            try {
+                const file = await s3.getObject(params).promise();
+                post.imgUrl = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+            } catch (err) {
+                console.log(err);
+                post.imgUrl = null;
+            }
+        })
+    );
 
     const perPage = 10;
     const page = req.query.page || 1;
@@ -160,28 +184,10 @@ router.get('/', async (req, res) => {
         })
     );
 
-    // Could also use a for of loop, but it's not as efficient
-    // for (const post of posts) {
-    //     if (!post.file) {
-    //         console.log(`No file found for post ${post._id}`);
-    //         continue;
-    //     }
-    //     const params = {
-    //         Bucket: process.env.S3_BUCKET_NAME,
-    //         Key: post.file
-    //     };
-    //     try {
-    //         const file = await s3.getObject(params).promise();
-    //         post.imgUrl = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
-    //     } catch (err) {
-    //         console.log(err);
-    //         post.imgUrl = null;
-    //     }
-    // }
-
     res.render('home/index', { 
         posts: posts, 
         featuredPost: featuredPost,
+        postsPopular: postsPopular,
         categories: categories,
         current: parseInt(page),
         pages: Math.ceil(postCount / perPage),  
