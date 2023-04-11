@@ -1,0 +1,45 @@
+{{> home/my-account-nav}}
+
+<div class="container">
+    <h1 class="my-4">My Ventures</h1>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Logo</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Category</th>
+                <th>Stage</th>
+                <th>View</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each ventures}}
+                <tr>
+                    <td>{{id}}</td>
+                    {{!-- <td><img height="50px" src="/uploads/{{file}}" alt=""></td> --}}
+                    <td>
+                        {{#if imgUrl}}
+                            <img class="card-img-top" src="{{imgUrl}}" alt="{{name}}">
+                        {{/if}}
+                    </td>
+                    <td>{{name}}</td>
+                    <td>{{status}}</td>
+                    <td>{{ventureCategory.name}}</td>
+                    <td>{{stage.name}}</td>
+                    <td><a href="/venture/{{slug}}">View</a></td>
+                    <td><a href="/my-account/ventures/edit/{{id}}">Edit</a></td>
+                    <td>
+                        <form action="/my-account/ventures/{{id}}?_method=DELETE" method="post">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>

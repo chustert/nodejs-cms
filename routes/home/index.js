@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../../models/Post');
+const Venture = require('../../models/Venture');
 const Category = require('../../models/Category');
+const VentureCategory = require('../../models/VentureCategory');
 const Comment = require('../../models/Comment');
 const Message = require('../../models/Message');
 const PostLikes = require('../../models/PostLikes');
+const VentureLikes = require('../../models/VentureLikes');
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs')
 const crypto = require("crypto");
@@ -156,6 +159,7 @@ router.get('/', async (req, res) => {
 
     const perPage = 10;
     const page = req.query.page || 1;
+    
     const posts = await Post.find({})
         .sort({ date: -1 })
         .skip((perPage * page) - perPage)
@@ -185,11 +189,42 @@ router.get('/', async (req, res) => {
         })
     );
 
+    const ventures = await Venture.find({})
+        // .sort({ date: -1 })
+        // .skip((perPage * page) - perPage)
+        // .limit(perPage)
+        .populate('user')
+        .populate('ventureCategory');
+
+    // const ventureCount = await Venture.count();
+    const ventureCategories = await VentureCategory.find({});
+
+    await Promise.all(
+        ventures.map(async venture => {
+            if (!venture.logoFile) {
+                return console.log(`No file found for venture ${venture._id}`);
+            }
+            const params = {
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: venture.logoFile
+            };
+            try {
+                const file = await s3.getObject(params).promise();
+                venture.imgUrl = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+            } catch (err) {
+                console.log(err);
+                venture.imgUrl = null;
+            }
+        })
+    );
+
     res.render('home/index', { 
         posts: posts, 
+        ventures: ventures,
         featuredPost: featuredPost,
         postsPopular: postsPopular,
         categories: categories,
+        ventureCategories: ventureCategories,
         current: parseInt(page),
         pages: Math.ceil(postCount / perPage),  
     });
@@ -289,6 +324,71 @@ router.put('/post/:slug/like', userAuthenticated, async (req, res) => {
             await newPostLike.save();
             await User.findOneAndUpdate({_id: user._id}, { $push: { likes: newPostLike._id } });
             await Post.findOneAndUpdate({_id: postId}, {$inc: {likes: 1}});
+            res.json({ success: true });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false });
+    }
+})
+
+router.get('/venture/:slug', async (req, res) => {
+    const venture = await Venture.findOne({slug: req.params.slug})
+    .populate({path: 'user', model: 'users'})
+    .populate('user');
+
+    let ventureLikes = [];
+    if (req.user) {
+      // Query the postLikes collection to find the likes associated with the current user and post
+      ventureLikes = await VentureLikes.find({user: req.user.id, venture: venture._id});
+    }
+
+    const ventureCategories = await VentureCategory.find({});
+
+    AWS.config.update({
+        region: 'ap-southeast-2'
+     });
+
+    const params = {
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: venture.logoFile
+    };
+
+    try {
+        const file = await s3.getObject(params).promise();
+        var dataSrc = `data:${file.ContentType};base64,${Buffer.from(file.Body).toString('base64')}`;
+        res.render('home/venture', { venture: venture, ventureCategories: ventureCategories, imgUrl: dataSrc, ventureLikes: ventureLikes });
+    } catch (err) {
+        console.log(`Error: ${err}`);
+        res.render('home/venture', { venture: venture, ventureCategories: ventureCategories, imgUrl: null, ventureLikes: ventureLikes });
+    }
+
+});
+
+router.put('/venture/:slug/like', userAuthenticated, async (req, res) => {
+    try {
+        const venture = await Venture.findOne({slug: req.params.slug});
+        const ventureId = venture._id;
+        const user = await User.findOne({_id: req.user.id})
+
+        const existingLike = await VentureLikes.findOne({ user: user._id, venture: venture._id });
+
+        console.log(`Existing Venture Like: ${existingLike}`);
+
+        if (existingLike) {
+            await existingLike.remove();
+            await Venture.findOneAndUpdate({_id: ventureId}, { $inc: { likes: -1 } });
+            await User.findOneAndUpdate({_id: user._id}, { $pull: { likes: existingLike._id } });
+            res.json({ message: "Like removed" });
+        } else {
+            const newVentureLike = new VentureLikes({ 
+                user: user._id, 
+                venture: venture._id 
+            });
+            
+            await newVentureLike.save();
+            await User.findOneAndUpdate({_id: user._id}, { $push: { ventureLikes: newVentureLike._id } });
+            await Venture.findOneAndUpdate({_id: ventureId}, {$inc: {likes: 1}});
             res.json({ success: true });
         }
     } catch (err) {

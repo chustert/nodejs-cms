@@ -1,0 +1,56 @@
+
+<div class="container">
+      <div class="row">
+
+        <!-- Venture Content Column -->
+        <div class="col-lg-8">
+
+          <!-- Title -->
+          <h1 class="mt-4">{{venture.name}}</h1>
+
+          <!-- Author -->
+          <p class="lead">
+            by
+            <a href="/account/profile/{{venture.user._id}}">{{venture.user.firstName}}</a>
+          </p>
+
+          <hr>
+
+          <!-- Date/Time/Likes -->
+          <p>{{venture.likes}} Likes</p>
+
+          <hr>
+
+          <!-- Preview Image -->
+          <img class="img-fluid rounded" src="{{imgUrl}}" alt="">
+
+          <hr>
+
+          <p>{{venture.description}}</p>
+
+          <hr>
+
+          <p>{{venture.elevatorPitch}}</p>
+
+          <hr>
+
+          {{#if user}}
+
+            <input data-slug="{{venture.slug}}" type="checkbox" {{#if ventureLikes.length}} checked {{/if}} name="ventureLikes">
+            
+            <hr>
+
+            {{else}}
+
+            <h3>You need to <a href="/login">login</a> to like.</h3>
+
+          {{/if}}
+
+        </div>
+
+        <!-- Sidebar Widgets Column -->
+        {{> home/sidebar}}
+      </div>
+      <!-- /.row -->
+</div>
+

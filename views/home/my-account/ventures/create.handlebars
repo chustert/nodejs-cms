@@ -1,0 +1,58 @@
+<div class="container">
+
+    <h1 class="my-4">Create Venture</h1>
+
+    {{#each errors}}
+        <div class="alert alert-danger">
+            {{message}}
+        </div>
+    {{/each}}
+
+    <form action="/my-account/ventures/create" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input required name="name" type="text" class="form-control" id="name" placeholder="Enter name">
+        </div>
+        <div class="form-group">
+            <label for="logoFile">Logo Upload</label>
+            <input name="logoFile" type="file" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="website">Website</label>
+            <input required name="website" type="text" class="form-control" id="website" placeholder="Enter website">
+        </div>
+        <div class="form-group">
+            <label for="ventureCategory">Venture Category</label>
+            <select name="ventureCategory" id="ventureCategory" class="form-control">
+                {{#each ventureCategories}}
+                    <option value="{{id}}">{{name}}</option>                
+                {{/each}}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="stage">Stage</label>
+            <select name="stage" id="stage" class="form-control">
+                {{#each stages}}
+                    <option value="{{id}}">{{name}}</option>                
+                {{/each}}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select name="status" id="status" class="form-control">
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+                <option value="draft">Draft</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea required name="description" cols="30" rows="10"  class="form-control" id="description" placeholder="Enter Description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="elevatorPitch">Elevator Pitch</label>
+            <textarea required name="elevatorPitch" cols="30" rows="10"  class="form-control" id="elevatorPitch" placeholder="Enter Elevator Pitch"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Post</button>
+    </form>
+</div>

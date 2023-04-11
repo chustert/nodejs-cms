@@ -1,14 +1,18 @@
 # nodejs-cms
 
-A simple content management system based on Node.js, Express.js and Mongoose with Handlebars for templating.
+A simple content management system based on Node.js, Express.js and MongoDB/Mongoose with Handlebars for templating.
 
 ### Features
 - Home page with blog posts
+- Shows (newest) featured post
+- Shows the most popular posts (based on comments)
 - Login and registration
 - Users can either be 'admin' or 'user'
 - Admin is able to log into admin area
 - Users can see each other's profiles
 - Users can message each other
+- Users can comment on posts
+- Users can like posts
 
 
 #### Account
@@ -26,6 +30,7 @@ Each user has their own account with:
 - Can create, edit and delete categories
 - Can see all comments from all users; can view, allow and delete them
 - Can see, edit and delete all profiles of all users
+- Can feature specific posts
 
 
 ##### Dependencies

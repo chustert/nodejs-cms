@@ -1,0 +1,41 @@
+<h1>Stages</h1>
+<hr>
+
+<div class="row">
+    <div class="col-sm-4">
+        <h2>Create Stage</h2>
+        <form action="/admin/stages/create" method="post">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" name="name" placeholder="Enter title" class="form-control">
+            </div>
+            <button class="btn btn-primary">Create Stage</button>
+        </form>
+    </div>
+
+    <div class="col-sm-8">
+        <h2>List of Stages</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each stages}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td>{{name}}</td>
+                        <td><a href="/admin/stages/edit/{{id}}" class="btn btn-info">Edit</a></td>
+                        <td>
+                            <form action="/admin/stages/{{id}}?_method=DELETE" method="post">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
