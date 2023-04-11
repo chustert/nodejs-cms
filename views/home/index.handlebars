@@ -77,25 +77,6 @@
         </div>
       {{/each}}
 
-      <h2>All Ventures</h2>
-
-      {{#each ventures}}
-        <!-- Blog Post -->
-        <div class="card mb-4">
-          {{#if imgUrl}}
-            <img class="card-img-top" src="{{imgUrl}}" alt="{{name}}">
-          {{/if}}
-          <div class="card-body">
-            <h2 class="card-title">{{name}}</h2>
-            <p class="card-text">{{description}}</p>
-            <a href="/venture/{{slug}}" class="btn btn-primary">Read More &rarr;</a>
-          </div>
-          <div class="card-footer text-muted">
-            Venture of <a href="/account/profile/{{user._id}}">{{user.firstName}}</a> in <a href="/venture-category/{{ventureCategory._id}}">{{ventureCategory.name}}</a> | {{likes}} Likes
-          </div>
-        </div>
-      {{/each}}
-
     </div>
 
     <!-- Sidebar Widgets Column -->

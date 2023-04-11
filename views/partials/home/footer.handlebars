@@ -91,22 +91,3 @@
             })
         });
     </script>
-
-    <script>
-        $("[name='ventureLikes']").bootstrapSwitch();
-
-        $(document).ready(() => {
-            $("[name='ventureLikes']").on('switchChange.bootstrapSwitch', function(e, data) {
-              const slug = $(this).attr('data-slug');
-              $.ajax({
-                  type: "PUT",
-                  url: `/venture/${slug}/like`, 
-                  data: {},
-                  cache: false,
-                  success: function(data) {
-                    toastr.success(`Venture with slug ${data.slug} was updated.`);
-                  }
-              })
-            })
-        });
-    </script>
